@@ -42,6 +42,9 @@
   left: 10%;
   width: 120px;
   height: 120px;
+  visibility: hidden;
+  opacity: 0;
+  animation: fade-in 1s linear 0.5s 1 normal forwards;
 }
 
 .img-wrapper {
@@ -91,7 +94,7 @@
   top: 5px;
   left: 100px;
   opacity: 1;
-  animation: fade-in 1s linear 0.5s 1 normal forwards;
+  animation: fade-in 1s linear 0.75s 1 normal forwards;
 }
 
 .content-bubble:nth-child(3) img {
@@ -208,7 +211,7 @@ svg:hover {
   }
 
   .menu {
-    height: 100px;
+    height: 190px;
   }
 
   .text-container {
@@ -217,23 +220,25 @@ svg:hover {
   }
 
   .content-bubble:nth-child(1) svg {
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
   }
 
   .content-bubble:nth-child(1) {
-    top: 15px;
-    left: 175px;
+    position: fixed;
+    top: 42px;
+    left: 55%;
   }
 
   .content-bubble:nth-child(2) svg {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
   }
 
   .content-bubble:nth-child(2) {
-    top: 5px;
-    left: 130px;
+    position: fixed;
+    top: 80px;
+    left: 38%;
   }
 
   .content-bubble:nth-child(3) svg {
@@ -242,8 +247,9 @@ svg:hover {
   }
 
   .content-bubble:nth-child(3) {
-    top: -10px;
-    left: 310%;
+    position: fixed;
+    top: 68px;
+    left: 68%;
   }
 
   .content-bubble:nth-child(4) svg {
@@ -252,7 +258,8 @@ svg:hover {
   }
 
   .content-bubble:nth-child(4) {
-    top: -100px;
-    left: 400%;
+    position: fixed;
+    top: 28x;
+    left: 81%;
   }
 }
