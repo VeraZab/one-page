@@ -1,0 +1,258 @@
+.page-container {
+  height: 100%;
+  margin: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-container {
+  width: 1050px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 150px;
+  background: -moz-linear-gradient(
+    top,
+    rgba(255, 255, 255, 1) 40%,
+    rgba(255, 255, 255, 0.9) 69%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1) 40%,
+    rgba(255, 255, 255, 0.9) 69%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
+  z-index: 1000;
+}
+
+.header {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 120px;
+  height: 120px;
+}
+
+.img-wrapper {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  background-color: #3fff84;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
+.content-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  position: relative;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.content-bubble:nth-child(1) svg {
+  width: 40px;
+  height: 40px;
+}
+
+.content-bubble:nth-child(1) {
+  top: 20px;
+  left: 150px;
+  animation: fade-in 1s linear 1.5s 1 normal forwards;
+}
+
+.content-bubble:nth-child(2) svg {
+  width: 60px;
+  height: 60px;
+}
+
+.content-bubble:nth-child(2) {
+  top: 5px;
+  left: 100px;
+  opacity: 1;
+  animation: fade-in 1s linear 0.5s 1 normal forwards;
+}
+
+.content-bubble:nth-child(3) img {
+  width: 45px;
+  height: 45px;
+}
+
+.content-bubble:nth-child(3) {
+  top: 20px;
+  left: -30px;
+  animation: fade-in 1s linear 2s 1 normal forwards;
+}
+
+.content-bubble:nth-child(4) img {
+  width: 55px;
+  height: 55px;
+}
+
+.content-bubble:nth-child(4) {
+  top: 25px;
+  left: 15px;
+  animation: fade-in 1s linear 1s 1 normal forwards;
+}
+
+svg:hover {
+  fill: #dc4fff;
+}
+
+.text-container {
+  margin: 170px 210px;
+  font-family: Helvetica;
+  font-size: 1.15rem;
+  width: 80%;
+  color: #0000ff;
+  line-height: 2rem;
+}
+
+.text-container a {
+  font-weight: bold;
+  text-decoration: underline wavy;
+  transition: text-decoration 2s;
+  text-underline-offset: 4px;
+}
+
+.text-container a:visited {
+  color: #0000ff;
+}
+
+.text-container a:hover {
+  color: #dc4fff;
+}
+
+.salutation {
+  font-weight: bold;
+  font-size: 3rem;
+}
+
+.hand {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  transform-origin: center;
+  animation: shake 2s infinite;
+  z-index: 0;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .header {
+    width: 80px;
+    height: 80px;
+    left: 15px;
+  }
+
+  .content-container {
+    justify-content: left;
+  }
+
+  .menu {
+    height: 100px;
+  }
+
+  .text-container {
+    margin: 150px 0px;
+    width: 100%;
+  }
+
+  .content-bubble:nth-child(1) svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .content-bubble:nth-child(1) {
+    top: 15px;
+    left: 175px;
+  }
+
+  .content-bubble:nth-child(2) svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .content-bubble:nth-child(2) {
+    top: 5px;
+    left: 130px;
+  }
+
+  .content-bubble:nth-child(3) svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .content-bubble:nth-child(3) {
+    top: -10px;
+    left: 310%;
+  }
+
+  .content-bubble:nth-child(4) svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .content-bubble:nth-child(4) {
+    top: -100px;
+    left: 400%;
+  }
+}
