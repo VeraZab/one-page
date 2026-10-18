@@ -1,0 +1,98 @@
+---
+title: "Reusable Agent Configurations for Claude Code and Codex"
+date: "2026-10-18"
+excerpt: "How to write agent config files once and have them work across Claude Code and Codex — covering CLAUDE.md, AGENTS.md, skills, and plugins."
+---
+
+The AI coding assistant space has fractured into a handful of tools that each want their own config format. If you work across Claude Code and Codex (or switch between them), you've probably noticed that both support some form of "instructions file" that shapes how the agent behaves — but they call them different things.
+
+The good news: the overlap is large enough to write configurations that work well in both.
+
+## The config files
+
+**Claude Code** reads from `CLAUDE.md` files — you can have one at the repo root, one per directory, and one at `~/.claude/CLAUDE.md` as a global default. These get merged and loaded automatically at the start of every session.
+
+**Codex** reads from `AGENTS.md`, using the same directory-scoped strategy. Same idea, different filename.
+
+If you want a single source of truth, you have two options:
+
+1. **Symlink** — keep one file and symlink the other to it.
+2. **Duplicate** — copy the same content into both `CLAUDE.md` and `AGENTS.md`. Tedious but explicit.
+
+Most teams end up with option 2, committing both files to the repo so whoever opens the project gets the right behavior regardless of their tool.
+
+## What to put in them
+
+The most useful things to include:
+
+- **Project context** — what the codebase does, the stack, any non-obvious architectural decisions.
+- **Conventions** — naming patterns, file structure, preferred libraries, things the agent would otherwise have to infer.
+- **What NOT to do** — this is underused. Explicitly listing things like "don't add comments explaining what the code does" or "don't create new files for one-off utilities" saves a lot of correction.
+- **Test and run commands** — so the agent can verify its own work without asking.
+
+```md
+# CLAUDE.md / AGENTS.md
+
+## Stack
+Next.js 15 App Router, TypeScript, Tailwind. No additional UI libraries.
+
+## Conventions
+- Components go in /components, one file per component
+- Pages go in /app following Next.js App Router conventions
+- No barrel exports (index.ts files)
+
+## Don't
+- Add JSDoc or inline comments explaining what the code does
+- Create abstractions unless a pattern appears 3+ times
+- Use `any` in TypeScript
+
+## Commands
+- Dev: `npm run dev`
+- Build: `npm run build`
+- Types: `npx tsc --noEmit`
+```
+
+## Skills and plugins
+
+Beyond the instructions file, Claude Code supports **skills** — reusable prompt bundles you install via `npx skills add`. They extend what the agent can do in a specific domain without you having to prompt from scratch every time.
+
+```bash
+# Install a skill globally
+npx skills add vercel-labs/agent-skills --global
+
+# Or per-project
+npx skills add vercel/vercel-plugin
+```
+
+Codex has a similar concept through its **tools** and **function definitions**, though the installation mechanism differs.
+
+The key insight is that skills are just prompt files under the hood — if you write a good skill for Claude Code, you can usually port the core instructions into a Codex tool definition with minimal changes.
+
+## The portable layer
+
+Here's what actually travels well between tools:
+
+| What | Claude Code | Codex |
+|---|---|---|
+| Project instructions | `CLAUDE.md` | `AGENTS.md` |
+| Global defaults | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` |
+| Reusable behaviors | Skills (`.claude/skills/`) | Custom instructions |
+| Permissions/safety | `.claude/settings.json` | Policy config |
+
+The instructions themselves — the actual prose describing your project, conventions, and constraints — are fully portable. Write them once, paste into both files.
+
+## A practical setup
+
+For a project used by a team that mixes tools, here's a structure that works:
+
+```
+.
+├── CLAUDE.md          ← symlink to AGENTS.md, or duplicate
+├── AGENTS.md
+└── .claude/
+    └── settings.json  ← Claude Code-specific permissions
+```
+
+Keep the prose instructions in `AGENTS.md` (it's more neutral), symlink `CLAUDE.md` to it, and put Claude Code-specific settings (allowed tools, permission overrides) in `.claude/settings.json` separately.
+
+This way the agent behavior is consistent, and the tool-specific config stays isolated.

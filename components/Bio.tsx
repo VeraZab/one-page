@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Bio() {
   return (
     <div className="text-container">
@@ -16,9 +18,7 @@ export default function Bio() {
         what I&apos;ve been up to
       </a>
       , as well as some links to{" "}
-      <a href="https://medium.com/@verazabeida" target="_blank" rel="noopener noreferrer">
-        my writings
-      </a>{" "}
+      <Link href="/blog">my writings</Link>{" "}
       and{" "}
       <a href="https://github.com/VeraZab" target="_blank" rel="noopener noreferrer">
         tinkerings

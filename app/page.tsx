@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import Bio from "@/components/Bio";
 
 export default function Home() {
@@ -6,7 +5,6 @@ export default function Home() {
     <main>
       <div className="page-container">
         <div className="content-container">
-          <Header />
           <Bio />
         </div>
       </div>
