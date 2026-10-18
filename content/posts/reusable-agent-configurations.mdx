@@ -65,6 +65,9 @@ If it helps to see it wired up, my dotfiles do exactly this at the user level �
 ```
 agent-config/
 ├── AGENTS.md            ← canonical, symlinked to both agents
+├── mcp/
+│   ├── servers.json     ← canonical MCP list
+│   └── sync-mcp.mjs     ← generates both formats
 ├── claude/
 │   ├── settings.json    ← Claude-only (permissions, plugins)
 │   └── statusline.sh
@@ -75,6 +78,38 @@ It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/age
 
 If that covers your setup, you can stop here. For me, it covers most days.
 
+## MCP: one list, both formats
+
+MCP is the one piece you can't just symlink, because the two tools want different file formats. Claude reads a JSON `mcpServers` object (in `.mcp.json`); Codex reads `[mcp_servers.*]` tables (in `~/.codex/config.toml`). Same servers, different syntax.
+
+So keep one list and generate both. In my repo that's a `servers.json`:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+and a ~30-line script that turns it into each tool's format:
+
+```bash
+node mcp/sync-mcp.mjs
+#  -> mcp/claude.mcp.json   { "mcpServers": { ... } }
+#  -> mcp/codex.toml        [mcp_servers.context7] command = "npx" ...
+```
+
+Point Claude at the JSON (symlink a project `.mcp.json` to it), drop the TOML block into Codex's `config.toml`, and both agents have the same servers. Edit the list, rerun, done. Two things worth keeping in mind:
+
+- **Keep secrets out of the source.** Reference them as `${ENV_VAR}` and let each tool resolve them at runtime — don't bake tokens into `servers.json`.
+- **Make failures loud.** You want a bad sync to be obvious and fixable by rerunning the generator, not one agent quietly running stale config.
+
+The generator and canonical list are in the same repo: [mcp/ in agent-config](https://github.com/VeraZab/agent-config/tree/main/mcp).
+
 ---
 
 ## The part that stays custom
@@ -83,22 +118,19 @@ A few things genuinely don't port, and it's better to know that up front than to
 
 | If you use... | Expect to keep it per-tool |
 |---|---|
-| MCP servers | Same servers, but Claude wants JSON and Codex wants TOML — generate both from one source |
 | Slash commands | Claude's `.claude/commands/` vs Codex's prompts (now folding into skills) — adapt |
 | Subagents | Share the definition where supported, native adapter otherwise |
 | Hooks | Different runtime models — only sync behavior that's genuinely compatible |
 | Permissions | Platform security controls — don't weaken them to force parity |
 | Plugins | Claude-specific; share the skill *inside* the plugin, not the plugin |
 
-The one you'll hit most is MCP. Keep a single canonical server list and run a ~30-line script that writes Claude's JSON and Codex's TOML. The thing you want is a failure that's *loud and recoverable* — regenerate from source — not one agent quietly running stale config.
-
 And if you'd rather not hand-roll the harder parts, a handful of community projects try to automate this. Check their maintenance and actually test them before you depend on one — this space moves fast and advertised features don't always hold:
 
-- **agent-config-sync** — Claude→Codex sync of skills, MCP, permissions.
-- **ai-config-sync-manager** — bidirectional Claude/Codex sync.
-- **ai-agent-config** — unified config via symlinks and generated adapters.
-- **universal-agent-skills** — portable skills across ecosystems.
-- **openai/skills `migrate-to-codex`** — official tooling for an initial conversion.
+- [agent-config-sync](https://github.com/B0llerwagen/agent-config-sync) — Claude→Codex sync of skills, MCP, permissions.
+- [ai-config-sync-manager](https://github.com/slash9494/ai-config-sync-manager) — bidirectional Claude/Codex sync.
+- [ai-agent-config](https://github.com/casoon/ai-agent-config) — unified config via symlinks and generated adapters.
+- [universal-agent-skills](https://github.com/26zl/universal-agent-skills) — portable skills across ecosystems.
+- [openai/skills `migrate-to-codex`](https://github.com/openai/skills/tree/main/skills/.curated/migrate-to-codex) — official tooling for an initial conversion.
 
 ## If you take one thing from this
 
