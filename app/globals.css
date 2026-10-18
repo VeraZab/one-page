@@ -1,3 +1,16 @@
+:root {
+  --navy: #000099; /* text — same hue as --blue, darkened; ~14:1 on white (AAA) */
+  --blue: #0000ff; /* inline links & accents */
+  --magenta: #dc4fff; /* hover */
+  --green: #3fff84; /* avatar ring */
+  --white: #fff;
+  --code-bg: #f5f5f5;
+  --table-head-bg: #f0f0ff;
+  --border: rgba(23, 37, 84, 0.25); /* navy-tinted hairline */
+  --font: Helvetica, sans-serif;
+  --content-width: 700px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,7 +23,7 @@ body {
 }
 
 body {
-  font-family: Helvetica, sans-serif;
+  font-family: var(--font);
 }
 
 .page-container {
@@ -34,12 +47,14 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 150px;
+  height: 176px;
+  /* Solid down to the bottom of the GitHub icon (~139px), then fade out
+     to transparent by where the page content begins (~176px). */
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 1) 40%,
-    rgba(255, 255, 255, 0.9) 69%,
-    rgba(255, 255, 255, 0) 100%
+    rgba(255, 255, 255, 1) 0,
+    rgba(255, 255, 255, 1) 139px,
+    rgba(255, 255, 255, 0) 176px
   );
   z-index: 1000;
 }
@@ -59,11 +74,12 @@ body {
   position: absolute;
   width: 110px;
   height: 110px;
-  background-color: #3fff84;
+  background-color: var(--green);
   border-radius: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .img-wrapper img {
@@ -75,6 +91,13 @@ body {
 
 .links-wrapper {
   position: relative;
+  /* Transparent box must not swallow clicks meant for the avatar link
+     underneath; only the actual icon links stay clickable. */
+  pointer-events: none;
+}
+
+.content-bubble a {
+  pointer-events: auto;
 }
 
 .content-bubble {
@@ -132,7 +155,7 @@ body {
 }
 
 svg:hover {
-  fill: #dc4fff;
+  fill: var(--magenta);
 }
 
 .content-bubble a,
@@ -145,9 +168,9 @@ svg:hover {
   left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%) translateX(-4px);
-  background: #0000ff;
-  color: #fff;
-  font-family: Helvetica, sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--font);
   font-size: 0.7rem;
   font-weight: bold;
   letter-spacing: 0.02em;
@@ -169,7 +192,7 @@ svg:hover {
   margin: 170px 210px;
   font-size: 1.15rem;
   width: 80%;
-  color: #0000ff;
+  color: var(--navy);
   line-height: 2rem;
 }
 
@@ -178,15 +201,15 @@ svg:hover {
   text-decoration: underline wavy;
   transition: text-decoration 2s;
   text-underline-offset: 4px;
-  color: #0000ff;
+  color: var(--blue);
 }
 
 .text-container a:visited {
-  color: #0000ff;
+  color: var(--blue);
 }
 
 .text-container a:hover {
-  color: #dc4fff;
+  color: var(--magenta);
 }
 
 .salutation {
@@ -228,20 +251,22 @@ svg:hover {
 /* Blog */
 .blog-wrapper {
   display: flex;
-  justify-content: center;
-  margin: 0 2rem;
+  justify-content: flex-start;
 }
 
+/* Desktop: sit to the right of the bubble cluster (like the home bio) so the
+   content can start high instead of being padded below the whole cluster. */
 .blog-container {
-  width: 700px;
-  max-width: 100%;
-  padding: 18rem 0 4rem;
+  width: var(--content-width);
+  max-width: calc(90vw - 170px);
+  margin-left: calc(10vw + 130px);
+  padding: 11rem 0 4rem;
 }
 
 .blog-title {
   font-size: 3rem;
   font-weight: bold;
-  color: #0000ff;
+  color: var(--navy);
   margin-bottom: 3rem;
 }
 
@@ -256,11 +281,11 @@ svg:hover {
 .post-link {
   display: block;
   text-decoration: none;
-  color: #0000ff;
+  color: var(--navy);
 }
 
 .post-link:hover .post-item-title {
-  color: #dc4fff;
+  color: var(--magenta);
   text-decoration: underline wavy;
   text-underline-offset: 4px;
 }
@@ -275,7 +300,7 @@ svg:hover {
 
 .post-date {
   font-size: 0.85rem;
-  color: #0000ff;
+  color: var(--navy);
   opacity: 0.6;
   display: block;
   margin-bottom: 0.4rem;
@@ -289,24 +314,25 @@ svg:hover {
 
 /* Post */
 .post-container {
-  width: 700px;
-  max-width: 100%;
-  padding: 18rem 0 4rem;
-  font-family: Helvetica, sans-serif;
-  color: #0000ff;
+  width: var(--content-width);
+  max-width: calc(90vw - 170px);
+  margin-left: calc(10vw + 130px);
+  padding: 11rem 0 4rem;
+  font-family: var(--font);
+  color: var(--navy);
 }
 
 .back-link {
   display: inline-block;
   margin-bottom: 2rem;
-  color: #0000ff;
+  color: var(--navy);
   font-weight: bold;
   text-decoration: underline wavy;
   text-underline-offset: 4px;
 }
 
 .back-link:hover {
-  color: #dc4fff;
+  color: var(--magenta);
 }
 
 .post-title {
@@ -335,15 +361,15 @@ svg:hover {
   font-weight: bold;
   text-decoration: underline wavy;
   text-underline-offset: 4px;
-  color: #0000ff;
+  color: var(--blue);
 }
 
 .post-body a:hover {
-  color: #dc4fff;
+  color: var(--magenta);
 }
 
 .post-body pre {
-  background: #f5f5f5;
+  background: var(--code-bg);
   border-radius: 6px;
   padding: 1rem 1.2rem;
   overflow-x: auto;
@@ -355,7 +381,7 @@ svg:hover {
 .post-body code {
   font-family: monospace;
   font-size: 0.9em;
-  background: #f5f5f5;
+  background: var(--code-bg);
   padding: 0.15em 0.35em;
   border-radius: 3px;
 }
@@ -383,13 +409,13 @@ svg:hover {
 
 .post-body th,
 .post-body td {
-  border: 1px solid #0000ff40;
+  border: 1px solid var(--border);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .post-body th {
-  background: #f0f0ff;
+  background: var(--table-head-bg);
   font-weight: bold;
 }
 
@@ -400,12 +426,12 @@ svg:hover {
   gap: 2rem;
   margin-top: 3.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #0000ff40;
+  border-top: 1px solid var(--border);
 }
 
 .post-nav-back {
   font-weight: bold;
-  color: #0000ff;
+  color: var(--navy);
   text-decoration: underline wavy;
   text-underline-offset: 4px;
   white-space: nowrap;
@@ -413,7 +439,7 @@ svg:hover {
 }
 
 .post-nav-back:hover {
-  color: #dc4fff;
+  color: var(--magenta);
 }
 
 .post-nav-next {
@@ -421,7 +447,7 @@ svg:hover {
   flex-direction: column;
   align-items: flex-end;
   text-align: right;
-  color: #0000ff;
+  color: var(--navy);
 }
 
 .post-nav-label {
@@ -437,7 +463,7 @@ svg:hover {
 }
 
 .post-nav-next:hover .post-nav-title {
-  color: #dc4fff;
+  color: var(--magenta);
 }
 
 @media (max-width: 900px) {
@@ -469,7 +495,7 @@ svg:hover {
   .content-bubble:nth-child(1) {
     position: fixed;
     top: 22px;
-    left: 174px;
+    left: 179px;
   }
 
   .content-bubble:nth-child(2) svg {
@@ -491,7 +517,7 @@ svg:hover {
   .content-bubble:nth-child(3) {
     position: fixed;
     top: 62px;
-    left: 221px;
+    left: 226px;
   }
 
   .content-bubble:nth-child(4) svg {
@@ -502,7 +528,7 @@ svg:hover {
   .content-bubble:nth-child(4) {
     position: fixed;
     top: 78px;
-    left: 279px;
+    left: 284px;
   }
 
   /* Tooltips drop below-centered on mobile so they never run off-screen */
@@ -518,14 +544,18 @@ svg:hover {
     transform: translateX(-50%) translateY(0);
   }
 
-  /* Blog + post pages clear the taller mobile header and tighten spacing */
+  /* Mobile: full-width centered content, moved up under the compact cluster */
   .blog-wrapper {
+    justify-content: center;
     margin: 0 1.25rem;
   }
 
   .blog-container,
   .post-container {
-    padding-top: 13rem;
+    width: var(--content-width);
+    max-width: 100%;
+    margin-left: 0;
+    padding-top: 11rem;
   }
 
   .blog-title {
