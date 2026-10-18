@@ -1,98 +1,105 @@
 ---
 title: "Reusable Agent Configurations for Claude Code and Codex"
 date: "2026-10-18"
-excerpt: "How to write agent config files once and have them work across Claude Code and Codex — covering CLAUDE.md, AGENTS.md, skills, and plugins."
+excerpt: "If you bounce between Claude Code and Codex on the same repo, you don't need two of everything. Here's the simple core that actually works — and the small part that stays custom."
+keywords:
+  - Claude Code
+  - Codex
+  - AGENTS.md
+  - CLAUDE.md
+  - AI agent configuration
+  - agent interoperability
 ---
 
-The AI coding assistant space has fractured into a handful of tools that each want their own config format. If you work across Claude Code and Codex (or switch between them), you've probably noticed that both support some form of "instructions file" that shapes how the agent behaves — but they call them different things.
+If you're like me, you use both Claude Code and Codex. You drift between them over time as they each get better — sometimes one pulls ahead and you want to switch it up, or you let one review the other's work. And you hit the same little annoyance: you don't want to set things up twice. You add a skill or tweak your instructions in one, and you just want the other to have it too.
 
-The good news: the overlap is large enough to write configurations that work well in both.
+I went looking for how far you can actually take that. The reassuring news: the part that does most of the work is genuinely simple. You don't need a framework or a sync daemon — just a couple of shared files and symlinks. Here's what held up.
 
-## The config files
+## Start here: one instructions file for both
 
-**Claude Code** reads from `CLAUDE.md` files — you can have one at the repo root, one per directory, and one at `~/.claude/CLAUDE.md` as a global default. These get merged and loaded automatically at the start of every session.
+This is the single highest-leverage thing you can do, and it takes a minute.
 
-**Codex** reads from `AGENTS.md`, using the same directory-scoped strategy. Same idea, different filename.
-
-If you want a single source of truth, you have two options:
-
-1. **Symlink** — keep one file and symlink the other to it.
-2. **Duplicate** — copy the same content into both `CLAUDE.md` and `AGENTS.md`. Tedious but explicit.
-
-Most teams end up with option 2, committing both files to the repo so whoever opens the project gets the right behavior regardless of their tool.
-
-## What to put in them
-
-The most useful things to include:
-
-- **Project context** — what the codebase does, the stack, any non-obvious architectural decisions.
-- **Conventions** — naming patterns, file structure, preferred libraries, things the agent would otherwise have to infer.
-- **What NOT to do** — this is underused. Explicitly listing things like "don't add comments explaining what the code does" or "don't create new files for one-off utilities" saves a lot of correction.
-- **Test and run commands** — so the agent can verify its own work without asking.
+Claude Code reads `CLAUDE.md`; Codex reads `AGENTS.md`. Same idea, different name. So if you're tired of keeping two copies in sync, put the real content in **`AGENTS.md`** and let Claude pull it in:
 
 ```md
-# CLAUDE.md / AGENTS.md
-
-## Stack
-Next.js 15 App Router, TypeScript, Tailwind. No additional UI libraries.
-
-## Conventions
-- Components go in /components, one file per component
-- Pages go in /app following Next.js App Router conventions
-- No barrel exports (index.ts files)
-
-## Don't
-- Add JSDoc or inline comments explaining what the code does
-- Create abstractions unless a pattern appears 3+ times
-- Use `any` in TypeScript
-
-## Commands
-- Dev: `npm run dev`
-- Build: `npm run build`
-- Types: `npx tsc --noEmit`
+<!-- CLAUDE.md -->
+@AGENTS.md
 ```
 
-## Skills and plugins
-
-Beyond the instructions file, Claude Code supports **skills** — reusable prompt bundles you install via `npx skills add`. They extend what the agent can do in a specific domain without you having to prompt from scratch every time.
+Claude Code expands `@`-path imports, so it reads your `AGENTS.md`; Codex reads it natively. Now you edit one file. Prefer a symlink? That works too:
 
 ```bash
-# Install a skill globally
-npx skills add vercel-labs/agent-skills --global
-
-# Or per-project
-npx skills add vercel/vercel-plugin
+ln -s AGENTS.md CLAUDE.md
 ```
 
-Codex has a similar concept through its **tools** and **function definitions**, though the installation mechanism differs.
-
-The key insight is that skills are just prompt files under the hood — if you write a good skill for Claude Code, you can usually port the core instructions into a Codex tool definition with minimal changes.
-
-## The portable layer
-
-Here's what actually travels well between tools:
-
-| What | Claude Code | Codex |
-|---|---|---|
-| Project instructions | `CLAUDE.md` | `AGENTS.md` |
-| Global defaults | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` |
-| Reusable behaviors | Skills (`.claude/skills/`) | Custom instructions |
-| Permissions/safety | `.claude/settings.json` | Policy config |
-
-The instructions themselves — the actual prose describing your project, conventions, and constraints — are fully portable. Write them once, paste into both files.
-
-## A practical setup
-
-For a project used by a team that mixes tools, here's a structure that works:
+And you can do the same for your *personal* defaults, machine-wide:
 
 ```
-.
-├── CLAUDE.md          ← symlink to AGENTS.md, or duplicate
-├── AGENTS.md
-└── .claude/
-    └── settings.json  ← Claude Code-specific permissions
+~/.claude/CLAUDE.md  ->  ~/agent-config/AGENTS.md
+~/.codex/AGENTS.md   ->  ~/agent-config/AGENTS.md
 ```
 
-Keep the prose instructions in `AGENTS.md` (it's more neutral), symlink `CLAUDE.md` to it, and put Claude Code-specific settings (allowed tools, permission overrides) in `.claude/settings.json` separately.
+If most of your frustration is "the two agents don't behave the same," this alone fixes it — your context and rules live in one place now.
 
-This way the agent behavior is consistent, and the tool-specific config stays isolated.
+## Then: your skills, shared as-is
+
+Skills feel like they'd be the hard part. They're not, and this surprised me when I dug in: Claude Code and Codex implement the **same `SKILL.md` spec** — YAML frontmatter with `name` and `description`, then a markdown body. Only the folders differ. Claude reads `.claude/skills/`; Codex reads `.agents/skills/`.
+
+So if you already have skills written for one, point the other at the same folder. Make `.agents/skills/` your source of truth (it's Codex's native location anyway) and symlink Claude at it:
+
+```bash
+ln -s ../.agents/skills .claude/skills   # Claude now reads the same folder
+```
+
+Write a skill once, both agents use it. And you're not fighting the tools to do this — Codex's own docs say it "supports symlinked skill folders and follows the symlink target when scanning." (It reads `~/.agents/skills` at the user level too.)
+
+Two things to know so you don't get surprised:
+
+- **You trigger them differently.** Claude uses `/skill-name`, Codex uses `$skill-name`. Same skill, different keystroke.
+- **Keep the frontmatter plain.** Stick to `name`, `description`, and your instructions. Tool-specific extras don't travel — Claude's `argument-hint` / `disable-model-invocation`, Codex's `agents/openai.yaml` sidecar. Keep the core clean and the same file runs in both.
+
+## What mine looks like
+
+If it helps to see it wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` symlinked into both agents, with Claude-only settings kept separate:
+
+```
+agent-config/
+├── AGENTS.md            ← canonical, symlinked to both agents
+├── claude/
+│   ├── settings.json    ← Claude-only (permissions, plugins)
+│   └── statusline.sh
+└── bootstrap.sh         ← recreates the symlinks on any machine
+```
+
+It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/agent-config). `bootstrap.sh` is a dozen lines of `ln -s`. That's the whole trick — version-controlled files plus symlinks, reproducible with one command.
+
+If that covers your setup, you can stop here. For me, it covers most days.
+
+---
+
+## The part that stays custom
+
+A few things genuinely don't port, and it's better to know that up front than to discover it when an agent silently misbehaves. Leave these native to each tool:
+
+| If you use... | Expect to keep it per-tool |
+|---|---|
+| MCP servers | Same servers, but Claude wants JSON and Codex wants TOML — generate both from one source |
+| Slash commands | Claude's `.claude/commands/` vs Codex's prompts (now folding into skills) — adapt |
+| Subagents | Share the definition where supported, native adapter otherwise |
+| Hooks | Different runtime models — only sync behavior that's genuinely compatible |
+| Permissions | Platform security controls — don't weaken them to force parity |
+| Plugins | Claude-specific; share the skill *inside* the plugin, not the plugin |
+
+The one you'll hit most is MCP. Keep a single canonical server list and run a ~30-line script that writes Claude's JSON and Codex's TOML. The thing you want is a failure that's *loud and recoverable* — regenerate from source — not one agent quietly running stale config.
+
+And if you'd rather not hand-roll the harder parts, a handful of community projects try to automate this. Check their maintenance and actually test them before you depend on one — this space moves fast and advertised features don't always hold:
+
+- **agent-config-sync** — Claude→Codex sync of skills, MCP, permissions.
+- **ai-config-sync-manager** — bidirectional Claude/Codex sync.
+- **ai-agent-config** — unified config via symlinks and generated adapters.
+- **universal-agent-skills** — portable skills across ecosystems.
+- **openai/skills `migrate-to-codex`** — official tooling for an initial conversion.
+
+## If you take one thing from this
+
+One shared layer for what you *tell* your agents, two native runtimes for how they *run*. Instructions and skills share cleanly and cover most of the value; MCP needs a tiny generator; permissions and hooks stay put. Reach for symlinks and a short script before any framework. You get to switch between Claude Code and Codex freely, without maintaining two of everything.
