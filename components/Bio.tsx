@@ -10,8 +10,9 @@ export default function Bio() {
       <br />
       <br />
 
-      Glad you made it here! My name is Vera Zabeida, and I&apos;m a web developer
-      with a passion for design, data science, and all things startup. I enjoy
+      Glad you made it here! My name is Vera Zabeida, and I&apos;m a senior
+      full-stack engineer with a passion for design, data science, and all
+      things startup. I enjoy
       working with creative teams, ideating and iterating. On this page you&apos;ll
       find a little bit of{" "}
       <a target="_blank" href="/Vera_Zabeida_Senior_Full_Stack_Engineer.pdf">

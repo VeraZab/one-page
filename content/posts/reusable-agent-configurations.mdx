@@ -1,7 +1,7 @@
 ---
 title: "Reusable Agent Configurations for Claude Code and Codex"
 date: "2026-10-18"
-excerpt: "If you bounce between Claude Code and Codex on the same repo, you don't need two of everything. Here's the simple core that actually works — and the small part that stays custom."
+excerpt: "If you bounce between Claude Code and Codex on the same repo, you don't need two of everything. Here's the simple core that actually works."
 keywords:
   - Claude Code
   - Codex
@@ -13,7 +13,7 @@ keywords:
 
 If you're like me, you use both Claude Code and Codex. You drift between them over time as they each get better — sometimes one pulls ahead and you want to switch it up, or you let one review the other's work. And you hit the same little annoyance: you don't want to set things up twice. You add a skill or tweak your instructions in one, and you just want the other to have it too.
 
-I went looking for how far you can actually take that. The reassuring news: the part that does most of the work is genuinely simple. You don't need a framework or a sync daemon — just a couple of shared files and symlinks. Here's what held up.
+I went looking for how far you can actually take that. The frank answer: three things sync cleanly — your **instructions**, your **skills**, and your **MCP servers**. The first two are just shared files and symlinks; MCP needs a tiny generator. No framework, no sync daemon. For a lot of setups, that's genuinely enough. The rest — hooks, permissions, subagents, plugins — stays native to each tool, and I'll be straight about that too.
 
 ## Start here: one instructions file for both
 
@@ -76,7 +76,7 @@ agent-config/
 
 It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/agent-config). `bootstrap.sh` is a dozen lines of `ln -s`. That's the whole trick — version-controlled files plus symlinks, reproducible with one command.
 
-If that covers your setup, you can stop here. For me, it covers most days.
+If that's all you need, you can stop here — plenty of setups won't need more. If you lean on MCP servers or custom tooling, keep going.
 
 ## MCP: one list, both formats
 
