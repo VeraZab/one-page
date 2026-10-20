@@ -1,0 +1,63 @@
+---
+title: "When to Use Claude Code Hooks (and When Not To)"
+date: "2026-10-20"
+excerpt: "Hooks are tempting: automate every rule the agent keeps breaking. Most of those rules don't belong in a hook. Here's the test I use before adding one."
+keywords:
+  - Claude Code
+  - hooks
+  - PreToolUse
+  - AGENTS.md
+  - agent safety
+  - CI
+---
+
+The first time you find hooks in Claude Code, it's tempting to reach for them constantly. The agent did the thing you told it not to? Write a hook. It pushed to the wrong branch? Hook. It keeps reformatting that file? Hook.
+
+I went through that phase. It backfires. You end up with a pile of brittle checks that block legitimate work, fire on edge cases you didn't think of, and slow down every command. The agent learns to work around them, and you learn to stop trusting them.
+
+So before I add a hook now, I ask one question: **where does this rule actually belong?** There are usually four answers, and only one of them is "a hook."
+
+## Four places a rule can live
+
+| Put it in… | When the rule is… |
+|---|---|
+| A **hook** | Mechanical, proven, and worth blocking in the moment |
+| **`AGENTS.md`** | Judgment — "prefer X," "usually Y," "it depends" |
+| **CI** | Needs a build, a database, the network, or a model |
+| **Nowhere** | It hasn't actually bitten you yet |
+
+A hook is a safety net for the specific rules an agent keeps getting wrong at the keyboard. It is not where most of your rules go. CI stays the real gate; the hook just fails in a second what CI would fail in minutes, so the agent doesn't burn a whole CI round on a mistake you could catch locally.
+
+## The test: all of these, or it's not a hook
+
+I only add a rule to a hook when every one of these is true. If one is false, it goes in `AGENTS.md`, in CI, or nowhere.
+
+1. **It bit twice.** Not "might happen" — actually happened, more than once. Name the incidents right in the rule (a PR, a date, a ticket). A rule nobody has broken is noise the agent learns to tune out.
+
+2. **It's mechanical.** A clean yes/no from the command text, the staged diff, or the current branch. If you can't state the rule without "usually" or "unless," it's judgment — that belongs in `AGENTS.md`, not a hook.
+
+3. **Zero false positives, and you've proven it.** Every rule ships with tests for the shapes agents actually type: multi-line commands, heredocs, `git -C`, chained commands. The first serious review of a guard hook I wrote found *eight* ways it blocked legitimate work. Assume yours does too until the tests say otherwise.
+
+4. **It's fast on the common path.** A regex or one `git diff --cached` — under ~50ms. Every single command pays this cost. If a check is slower, hide it behind a cheap trigger so it doesn't run on the common path (e.g. only when a specific file is staged, or once per `git push` instead of per command).
+
+5. **It fails open.** Bad input, no git repo, a timeout, a crashed tool — allow silently. A hook that wedges your session or blocks a release the moment something unexpected happens is worse than no hook.
+
+6. **It denies only when there's no legitimate exception.** Pushing straight to `dev`, a ticket-less PR marked ready — hard no. But anything a human *sometimes* wants should `ask`, not `deny`. Reserve the block for things that are never okay.
+
+7. **It's one hook, one process.** All the rules live in a single script, not one script per rule. Every tool call pays the hook's startup cost once — don't multiply it.
+
+## What a hook is *not*
+
+- **Not a replacement for CI.** CI runs the lanes that need Postgres, a build, or a model, and it can't be bypassed. A hook runs on one laptop and can be skipped. Use the hook to catch the cheap stuff early; let CI stay the gate. (If you do run CI's own checks early in a hook, run the *same scripts* — and let CI run them again anyway.)
+
+- **Not a style guide.** "Prefer named exports," "keep functions small" — that's `AGENTS.md`, which `CLAUDE.md` can import. A hook that enforces taste just generates friction.
+
+- **Not a place for judgment.** Which approach to take, how to resolve a conflict, whether a change is big enough to need a doc — those are instructions you give the agent, not checks you run against it.
+
+## If you do add one
+
+Edit the one hook script, add test cases for the shapes agents actually type, run the tests, and write down in the PR which incident the rule answers. Removing a rule later takes the same care — a line on why it no longer bites. A hook you can't explain is a hook you should delete.
+
+## The short version
+
+Reach for a hook last, not first. If a rule is judgment, write it down. If it needs real infrastructure, it's CI's job. If it hasn't bitten you twice, wait. What's left — mechanical, proven, fast, fail-open — is the small set of things a hook is actually good at: catching the mistake the agent keeps making, in the second before it costs you.
