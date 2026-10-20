@@ -11,9 +11,9 @@ keywords:
   - agent interoperability
 ---
 
-If you're like me, you use both Claude Code and Codex. You drift between them over time as they each get better — sometimes one pulls ahead and you want to switch it up, or you let one review the other's work. And you hit the same little annoyance: you don't want to set things up twice. You add a skill or tweak your instructions in one, and you just want the other to have it too.
+If you're like me, and you use both Claude Code and Codex. You drift between them over time as they each get better — sometimes one pulls ahead and you want to switch it up, or you let one review the other's work. And you hit the same little annoyance: you don't want to set things up twice. You add a skill or tweak your instructions in one, and you just want the other to have it too.
 
-I went looking for how far you can actually take that. The frank answer: three things sync cleanly — your **instructions**, your **skills**, and your **MCP servers**. The first two are just shared files and symlinks; MCP needs a tiny generator. No framework, no sync daemon. For a lot of setups, that's genuinely enough. The rest — hooks, permissions, subagents, plugins — stays native to each tool, and I'll be straight about that too.
+I went looking for how far you can actually take that. The frank answer: three things sync cleanly — your **instructions**, your **skills**, and your **MCP servers**. The first two are just shared files and symlinks; MCP needs a tiny generator. No framework, no sync daemon. It's a good start.
 
 ## Start here: one instructions file for both
 
@@ -23,6 +23,7 @@ Claude Code reads `CLAUDE.md`; Codex reads `AGENTS.md`. Same idea, different nam
 
 ```md
 <!-- CLAUDE.md -->
+
 @AGENTS.md
 ```
 
@@ -32,7 +33,7 @@ Claude Code expands `@`-path imports, so it reads your `AGENTS.md`; Codex reads 
 ln -s AGENTS.md CLAUDE.md
 ```
 
-And you can do the same for your *personal* defaults, machine-wide:
+And you can do the same for your _personal_ defaults, machine-wide:
 
 ```
 ~/.claude/CLAUDE.md  ->  ~/agent-config/AGENTS.md
@@ -65,6 +66,8 @@ If it helps to see it wired up, my dotfiles do exactly this at the user level �
 ```
 agent-config/
 ├── AGENTS.md            ← canonical, symlinked to both agents
+├── skills/              ← personal skills, linked into both agents
+│   └── draft-pr/SKILL.md
 ├── mcp/
 │   ├── servers.json     ← canonical MCP list
 │   └── sync-mcp.mjs     ← generates both formats
@@ -116,13 +119,13 @@ The generator and canonical list are in the same repo: [mcp/ in agent-config](ht
 
 A few things genuinely don't port, and it's better to know that up front than to discover it when an agent silently misbehaves. Leave these native to each tool:
 
-| If you use... | Expect to keep it per-tool |
-|---|---|
+| If you use...  | Expect to keep it per-tool                                                        |
+| -------------- | --------------------------------------------------------------------------------- |
 | Slash commands | Claude's `.claude/commands/` vs Codex's prompts (now folding into skills) — adapt |
-| Subagents | Share the definition where supported, native adapter otherwise |
-| Hooks | Different runtime models — only sync behavior that's genuinely compatible |
-| Permissions | Platform security controls — don't weaken them to force parity |
-| Plugins | Claude-specific; share the skill *inside* the plugin, not the plugin |
+| Subagents      | Share the definition where supported, native adapter otherwise                    |
+| Hooks          | Different runtime models — only sync behavior that's genuinely compatible         |
+| Permissions    | Platform security controls — don't weaken them to force parity                    |
+| Plugins        | Claude-specific; share the skill _inside_ the plugin, not the plugin              |
 
 And if you'd rather not hand-roll the harder parts, a handful of community projects try to automate this. Check their maintenance and actually test them before you depend on one — this space moves fast and advertised features don't always hold:
 
@@ -134,4 +137,4 @@ And if you'd rather not hand-roll the harder parts, a handful of community proje
 
 ## If you take one thing from this
 
-One shared layer for what you *tell* your agents, two native runtimes for how they *run*. Instructions and skills share cleanly and cover most of the value; MCP needs a tiny generator; permissions and hooks stay put. Reach for symlinks and a short script before any framework. You get to switch between Claude Code and Codex freely, without maintaining two of everything.
+One shared layer for what you _tell_ your agents, two native runtimes for how they _run_. Instructions and skills share cleanly and cover most of the value; MCP needs a tiny generator; permissions and hooks stay put. Reach for symlinks and a short script before any framework. You get to switch between Claude Code and Codex freely, without maintaining two of everything.

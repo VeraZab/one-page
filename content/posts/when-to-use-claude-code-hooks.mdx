@@ -1,7 +1,7 @@
 ---
 title: "When to Use Claude Code Hooks (and When Not To)"
 date: "2026-10-20"
-excerpt: "Hooks are tempting: automate every rule the agent keeps breaking. Most of those rules don't belong in a hook. Here's the test I use before adding one."
+excerpt: "Hooks are tempting: automate every rule the agent keeps breaking. But not everything belongs in a hook — here's the test I use before adding one."
 keywords:
   - Claude Code
   - hooks
@@ -26,7 +26,7 @@ So before I add a hook now, I ask one question: **where does this rule actually 
 | **CI** | Needs a build, a database, the network, or a model |
 | **Nowhere** | It hasn't actually bitten you yet |
 
-A hook is a safety net for the specific rules an agent keeps getting wrong at the keyboard. It is not where most of your rules go. CI stays the real gate; the hook just fails in a second what CI would fail in minutes, so the agent doesn't burn a whole CI round on a mistake you could catch locally.
+A hook is a safety net for the specific rules an agent keeps getting wrong at the keyboard. CI stays the real gate; the hook just fails in a second what CI would fail in minutes, so the agent doesn't burn a whole CI round on a mistake you could catch locally.
 
 ## The test: all of these, or it's not a hook
 
