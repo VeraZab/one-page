@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Block a commit that publishes a blog post with incomplete SEO frontmatter.
+# Every post's meta tags, JSON-LD, sitemap entry, and /llms.txt line are
+# generated from its frontmatter, so this keeps the generated SEO complete.
+set -euo pipefail
+
+posts=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^content/posts/.*\.mdx$' || true)
+[ -z "$posts" ] && exit 0
+
+echo "Checking blog post SEO…"
+# shellcheck disable=SC2086
+node scripts/check-post-seo.mjs $posts

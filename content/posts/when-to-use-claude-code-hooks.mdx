@@ -32,7 +32,7 @@ A hook is a safety net for the specific rules an agent keeps getting wrong at th
 
 I only add a rule to a hook when every one of these is true. If one is false, it goes in `AGENTS.md`, in CI, or nowhere.
 
-1. **It bit twice.** Not "might happen" — actually happened, more than once. Name the incidents right in the rule (a PR, a date, a ticket). A rule nobody has broken is noise the agent learns to tune out.
+1. **It bit twice.** Not "might happen" — actually happened, more than once. Name the incidents right in the rule (a PR, a date, a ticket). A rule for a mistake nobody's made is dead weight in the script and a false positive waiting to happen — and you can't write a good test for a failure you've never seen.
 
 2. **It's mechanical.** A clean yes/no from the command text, the staged diff, or the current branch. If you can't state the rule without "usually" or "unless," it's judgment — that belongs in `AGENTS.md`, not a hook.
 

@@ -11,11 +11,11 @@ keywords:
   - agent interoperability
 ---
 
-If you're like me, you use both Claude Code and Codex, drifting between them over time as they each get better — sometimes one pulls ahead and you want to switch it up, or you let one review the other's work. And you hit the same little annoyance: you don't want to set things up twice. You add a skill or tweak your instructions in one, and you just want the other to have it too.
+If you're like me, you like switching between agents now and then. Maybe you're seeing how they compare when one ships a new model, or you're having one review the other's work. Either way, it gets annoying when your setup doesn't come with you — you add a skill or tweak your instructions in one agent, and the other has no idea.
 
-I went looking for how far you can actually take that. The frank answer: three things sync cleanly — your **instructions**, your **skills**, and your **MCP servers**. The first two are just shared files and symlinks; MCP needs a tiny generator. No framework, no sync daemon. It's a good start.
+There's no easy way to make everything compatible across agents ([though a few projects are trying](#the-rest-and-the-projects-chasing-it)). But three things do port cleanly — your instructions, your skills, and your MCP servers — and setting them up makes the core of your config reusable between Claude Code and Codex. No framework, no sync daemon. Here's each one.
 
-## Start here: one instructions file for both
+## Instructions: one file for both
 
 This is the single highest-leverage thing you can do, and it takes a minute.
 
@@ -42,7 +42,7 @@ And you can do the same for your _personal_ defaults, machine-wide:
 
 If most of your frustration is "the two agents don't behave the same," this alone fixes it — your context and rules live in one place now.
 
-## Then: your skills, shared as-is
+## Skills: share the same folder
 
 Skills feel like they'd be the hard part. They're not, and this surprised me when I dug in: Claude Code and Codex implement the **same `SKILL.md` spec** — YAML frontmatter with `name` and `description`, then a markdown body. Only the folders differ. Claude reads `.claude/skills/`; Codex reads `.agents/skills/`.
 
@@ -58,28 +58,6 @@ Two things to know so you don't get surprised:
 
 - **You trigger them differently.** Claude uses `/skill-name`, Codex uses `$skill-name`. Same skill, different keystroke.
 - **Keep the frontmatter plain.** Stick to `name`, `description`, and your instructions. Tool-specific extras don't travel — Claude's `argument-hint` / `disable-model-invocation`, Codex's `agents/openai.yaml` sidecar. Keep the core clean and the same file runs in both.
-
-## What mine looks like
-
-If it helps to see it wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` symlinked into both agents, with Claude-only settings kept separate:
-
-```
-agent-config/
-├── AGENTS.md            ← canonical, symlinked to both agents
-├── skills/              ← personal skills, linked into both agents
-│   └── draft-pr/SKILL.md
-├── mcp/
-│   ├── servers.json     ← canonical MCP list
-│   └── sync-mcp.mjs     ← generates both formats
-├── claude/
-│   ├── settings.json    ← Claude-only (permissions, plugins)
-│   └── statusline.sh
-└── bootstrap.sh         ← recreates the symlinks on any machine
-```
-
-It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/agent-config). `bootstrap.sh` is a dozen lines of `ln -s`. That's the whole trick — version-controlled files plus symlinks, reproducible with one command.
-
-If that's all you need, you can stop here — plenty of setups won't need more. If you lean on MCP servers or custom tooling, keep going.
 
 ## MCP: one list, both formats
 
@@ -113,11 +91,29 @@ Point Claude at the JSON (symlink a project `.mcp.json` to it), drop the TOML bl
 
 The generator and canonical list are in the same repo: [mcp/ in agent-config](https://github.com/VeraZab/agent-config/tree/main/mcp).
 
----
+## What mine looks like
 
-## The part that stays custom
+If it helps to see all three wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` and a shared `skills/` symlinked into both agents, MCP generated for each, and Claude-only settings kept separate:
 
-A few things genuinely don't port, and it's better to know that up front than to discover it when an agent silently misbehaves. Leave these native to each tool:
+```
+agent-config/
+├── AGENTS.md            ← canonical, symlinked to both agents
+├── skills/              ← personal skills, linked into both agents
+│   └── draft-pr/SKILL.md
+├── mcp/
+│   ├── servers.json     ← canonical MCP list
+│   └── sync-mcp.mjs     ← generates both formats
+├── claude/
+│   ├── settings.json    ← Claude-only (permissions, plugins)
+│   └── statusline.sh
+└── bootstrap.sh         ← recreates the symlinks on any machine
+```
+
+It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/agent-config). `bootstrap.sh` is a dozen lines of `ln -s`. That's the whole trick — version-controlled files plus symlinks, reproducible with one command.
+
+## The rest, and the projects chasing it
+
+Those three shares cover the everyday stuff. A few things genuinely don't port, though — leave these native to each tool:
 
 | If you use...  | Expect to keep it per-tool                                                        |
 | -------------- | --------------------------------------------------------------------------------- |
@@ -127,7 +123,7 @@ A few things genuinely don't port, and it's better to know that up front than to
 | Permissions    | Platform security controls — don't weaken them to force parity                    |
 | Plugins        | Claude-specific; share the skill _inside_ the plugin, not the plugin              |
 
-And if you'd rather not hand-roll the harder parts, a handful of community projects try to automate this. Check their maintenance and actually test them before you depend on one — this space moves fast and advertised features don't always hold:
+And if you'd rather not hand-roll the rest, a handful of community projects try to automate the whole thing. Check their maintenance and actually test them before you depend on one — this space moves fast and advertised features don't always hold:
 
 - [agent-config-sync](https://github.com/B0llerwagen/agent-config-sync) — Claude→Codex sync of skills, MCP, permissions.
 - [ai-config-sync-manager](https://github.com/slash9494/ai-config-sync-manager) — bidirectional Claude/Codex sync.
@@ -135,6 +131,4 @@ And if you'd rather not hand-roll the harder parts, a handful of community proje
 - [universal-agent-skills](https://github.com/26zl/universal-agent-skills) — portable skills across ecosystems.
 - [openai/skills `migrate-to-codex`](https://github.com/openai/skills/tree/main/skills/.curated/migrate-to-codex) — official tooling for an initial conversion.
 
-## If you take one thing from this
-
-One shared layer for what you _tell_ your agents, two native runtimes for how they _run_. Instructions and skills share cleanly and cover most of the value; MCP needs a tiny generator; permissions and hooks stay put. Reach for symlinks and a short script before any framework. You get to switch between Claude Code and Codex freely, without maintaining two of everything.
+Start with the three that port cleanly. Reach for the rest only when you actually need it.

@@ -2,8 +2,10 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
-import html from "remark-html";
 import gfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeSlug from "rehype-slug";
+import rehypeStringify from "rehype-stringify";
 
 const postsDir = path.join(process.cwd(), "content/posts");
 
@@ -50,7 +52,12 @@ export function getNextPost(slug: string): PostMeta | null {
 export async function getPost(slug: string): Promise<Post> {
   const raw = fs.readFileSync(path.join(postsDir, `${slug}.mdx`), "utf8");
   const { data, content } = matter(raw);
-  const processed = await remark().use(gfm).use(html).process(content);
+  const processed = await remark()
+    .use(gfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
+    .process(content);
   return {
     slug,
     title: data.title,
