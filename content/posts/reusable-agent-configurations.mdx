@@ -13,7 +13,7 @@ keywords:
 
 If you're like me, you like switching between agents now and then. Maybe you're seeing how they compare when one ships a new model, or you're having one review the other's work. Either way, it gets annoying when your setup doesn't come with you — you add a skill or tweak your instructions in one agent, and the other has no idea.
 
-There's no easy way to make everything compatible across agents ([though a few projects are trying](#the-rest-and-the-projects-chasing-it)). But three things do port cleanly — your instructions, your skills, and your MCP servers — and setting them up makes the core of your config reusable between Claude Code and Codex. No framework, no sync daemon. Here's each one.
+There's no easy way to make everything compatible across agents ([though a few projects are trying](#if-you-need-more)). But three things do port cleanly — your instructions, your skills, and your MCP servers — and setting them up makes the core of your config reusable between Claude Code and Codex. No framework, no sync daemon. Here's each one.
 
 ## Instructions: one file for both
 
@@ -27,18 +27,7 @@ Claude Code reads `CLAUDE.md`; Codex reads `AGENTS.md`. Same idea, different nam
 @AGENTS.md
 ```
 
-Claude Code expands `@`-path imports, so it reads your `AGENTS.md`; Codex reads it natively. Now you edit one file. Prefer a symlink? That works too:
-
-```bash
-ln -s AGENTS.md CLAUDE.md
-```
-
-And you can do the same for your _personal_ defaults, machine-wide:
-
-```
-~/.claude/CLAUDE.md  ->  ~/agent-config/AGENTS.md
-~/.codex/AGENTS.md   ->  ~/agent-config/AGENTS.md
-```
+Claude Code expands `@`-path imports, so it reads your `AGENTS.md`; Codex reads it natively.
 
 If most of your frustration is "the two agents don't behave the same," this alone fixes it — your context and rules live in one place now.
 
@@ -56,7 +45,7 @@ Write a skill once, both agents use it. And you're not fighting the tools to do 
 
 Two things to know so you don't get surprised:
 
-- **You trigger them differently.** Claude uses `/skill-name`, Codex uses `$skill-name`. Same skill, different keystroke.
+- **You trigger them a little differently.** In Claude you run a skill by name with `/skill-name`. In Codex you type `$skill-name`, or `/skills` to pick one from a list. Same skill, slightly different keystroke.
 - **Keep the frontmatter plain.** Stick to `name`, `description`, and your instructions. Tool-specific extras don't travel — Claude's `argument-hint` / `disable-model-invocation`, Codex's `agents/openai.yaml` sidecar. Keep the core clean and the same file runs in both.
 
 ## MCP: one list, both formats
@@ -89,8 +78,6 @@ Point Claude at the JSON (symlink a project `.mcp.json` to it), drop the TOML bl
 - **Keep secrets out of the source.** Reference them as `${ENV_VAR}` and let each tool resolve them at runtime — don't bake tokens into `servers.json`.
 - **Make failures loud.** You want a bad sync to be obvious and fixable by rerunning the generator, not one agent quietly running stale config.
 
-The generator and canonical list are in the same repo: [mcp/ in agent-config](https://github.com/VeraZab/agent-config/tree/main/mcp).
-
 ## What mine looks like
 
 If it helps to see all three wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` and a shared `skills/` symlinked into both agents, MCP generated for each, and Claude-only settings kept separate:
@@ -111,7 +98,7 @@ agent-config/
 
 It's on GitHub: [github.com/VeraZab/agent-config](https://github.com/VeraZab/agent-config). `bootstrap.sh` is a dozen lines of `ln -s`. That's the whole trick — version-controlled files plus symlinks, reproducible with one command.
 
-## The rest, and the projects chasing it
+## If you need more
 
 Those three shares cover the everyday stuff. A few things genuinely don't port, though — leave these native to each tool:
 

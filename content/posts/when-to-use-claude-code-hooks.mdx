@@ -40,11 +40,11 @@ I only add a rule to a hook when every one of these is true. If one is false, it
 
 4. **It's fast on the common path.** A regex or one `git diff --cached` — under ~50ms. Every single command pays this cost. If a check is slower, hide it behind a cheap trigger so it doesn't run on the common path (e.g. only when a specific file is staged, or once per `git push` instead of per command).
 
-5. **It fails open.** Bad input, no git repo, a timeout, a crashed tool — allow silently. A hook that wedges your session or blocks a release the moment something unexpected happens is worse than no hook.
+5. **If the hook breaks, let the command through.** Weird input, no git repo, a timeout, the script crashes — don't block, just allow. The hook is a helper, not a bouncer you can't get past, so a bug in it should never be the thing that freezes your work or stops a release. (Picture a spell-checker that crashes: you'd want it to quietly stop underlining, not lock your whole document.)
 
 6. **It denies only when there's no legitimate exception.** Pushing straight to `dev`, a ticket-less PR marked ready — hard no. But anything a human *sometimes* wants should `ask`, not `deny`. Reserve the block for things that are never okay.
 
-7. **It's one hook, one process.** All the rules live in a single script, not one script per rule. Every tool call pays the hook's startup cost once — don't multiply it.
+7. **Keep every rule in one script, not one script per rule.** Each command the agent runs has to fire up your hook script, and starting it up costs a little time. Pay that once, not once per rule. It's the difference between one guard at the door checking three things and three guards each running their own line.
 
 ## What a hook is *not*
 
