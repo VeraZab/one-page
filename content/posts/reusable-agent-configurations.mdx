@@ -31,22 +31,22 @@ Claude Code expands `@`-path imports, so it reads your `AGENTS.md`; Codex reads 
 
 If most of your frustration is "the two agents don't behave the same," this alone fixes it — your context and rules live in one place now.
 
-## Skills: share the same folder
+## Skills: keep them in Claude, mirror to Codex
 
-Skills feel like they'd be the hard part. They're not, and this surprised me when I dug in: Claude Code and Codex implement the **same `SKILL.md` spec** — YAML frontmatter with `name` and `description`, then a markdown body. Only the folders differ. Claude reads `.claude/skills/`; Codex reads `.agents/skills/`.
+Skills feel like they'd be the hard part. They're not. Claude Code and Codex use the **same `SKILL.md` spec** — YAML frontmatter with `name` and `description`, then a markdown body. Only the folders differ: Claude reads `.claude/skills/`, Codex reads `.agents/skills/`.
 
-So if you already have skills written for one, point the other at the same folder. Make `.agents/skills/` your source of truth (it's Codex's native location anyway) and symlink Claude at it:
+I mostly live in Claude, so my skills stay in `.claude/skills/` — that's home. To let Codex use them too, just point its folder at Claude's:
 
 ```bash
-ln -s ../.agents/skills .claude/skills   # Claude now reads the same folder
+ln -s ../.claude/skills .agents/skills   # Codex now reads your Claude skills
 ```
 
-Write a skill once, both agents use it. And you're not fighting the tools to do this — Codex's own docs say it "supports symlinked skill folders and follows the symlink target when scanning." (It reads `~/.agents/skills` at the user level too.)
+Write a skill once, in Claude, and Codex picks it up. You're not fighting the tools to do this — Codex's own docs say it "supports symlinked skill folders and follows the symlink target when scanning." (At the user level it reads `~/.agents/skills`, so symlink that to `~/.claude/skills`.)
 
 Two things to know so you don't get surprised:
 
 - **You trigger them a little differently.** In Claude you run a skill by name with `/skill-name`. In Codex you type `$skill-name`, or `/skills` to pick one from a list. Same skill, slightly different keystroke.
-- **Keep the frontmatter plain.** Stick to `name`, `description`, and your instructions. Tool-specific extras don't travel — Claude's `argument-hint` / `disable-model-invocation`, Codex's `agents/openai.yaml` sidecar. Keep the core clean and the same file runs in both.
+- **Keep the frontmatter plain, and let the rest go.** Stick to `name`, `description`, and your instructions, and the same file runs in both. The tool-specific extras — Claude's `argument-hint` / `disable-model-invocation`, Codex's `agents/openai.yaml` sidecar — don't travel. That's fine. Whatever doesn't port just doesn't.
 
 ## MCP: one list, both formats
 
@@ -80,12 +80,12 @@ Point Claude at the JSON (symlink a project `.mcp.json` to it), drop the TOML bl
 
 ## What mine looks like
 
-If it helps to see all three wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` and a shared `skills/` symlinked into both agents, MCP generated for each, and Claude-only settings kept separate:
+If it helps to see all three wired up, my dotfiles do exactly this at the user level — one `AGENTS.md` for both agents, my Claude skills mirrored to Codex, MCP generated for each, and Claude-only settings kept separate:
 
 ```
 agent-config/
 ├── AGENTS.md            ← canonical, symlinked to both agents
-├── skills/              ← personal skills, linked into both agents
+├── skills/              ← Claude skills; Codex mirrors them
 │   └── draft-pr/SKILL.md
 ├── mcp/
 │   ├── servers.json     ← canonical MCP list
