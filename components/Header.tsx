@@ -117,7 +117,7 @@ export default function Header() {
           <SocialLink href="https://github.com/VeraZab" label="GitHub">
             <GitHubIcon />
           </SocialLink>
-          <SocialLink href="/Vera_Zabeida_Senior_Full_Stack_Engineer.pdf" label="CV">
+          <SocialLink href="/VERA_ZABEIDA_Senior_Full_Stack_Engineer.pdf" label="CV">
             <CVIcon />
           </SocialLink>
           <SocialLink href="https://www.linkedin.com/in/verazabeida/" label="LinkedIn">

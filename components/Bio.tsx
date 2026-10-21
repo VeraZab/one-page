@@ -15,7 +15,7 @@ export default function Bio() {
       things startup. I enjoy
       working with creative teams, ideating and iterating. On this page you&apos;ll
       find a little bit of{" "}
-      <a target="_blank" href="/Vera_Zabeida_Senior_Full_Stack_Engineer.pdf">
+      <a target="_blank" href="/VERA_ZABEIDA_Senior_Full_Stack_Engineer.pdf">
         what I&apos;ve been up to
       </a>
       , as well as some links to{" "}

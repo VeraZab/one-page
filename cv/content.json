@@ -1,0 +1,65 @@
+{
+  "name": "Vera Zabeida",
+  "title": "Senior Full Stack Engineer",
+  "contact": [
+    "New York Metropolitan Area",
+    "Green Card Holder",
+    "vera.zabeida@gmail.com"
+  ],
+  "summary": "Senior Full Stack Engineer with 10 years of startup experience building customer-focused products from concept to production. Known for simplifying complex problems, identifying customer value, and delivering pragmatic full-stack and AI-powered solutions.",
+  "experience": [
+    {
+      "company": "Atomic Supply",
+      "site": "atomic.supply",
+      "role": "Full Stack Software Engineer",
+      "dates": "Nov 2024 – Present",
+      "bullets": [
+        "Built a high-performance inventory optimization platform using React, TypeScript, GraphQL, Python, and Polars.",
+        "Developed an AI agent enabling non-engineers to extend application functionality, increasing engineering velocity by ~50%.",
+        "Partnered with product to transform ambiguous requirements into intuitive product experiences.",
+        "Owned features across frontend, backend, AI systems, and AWS infrastructure."
+      ]
+    },
+    {
+      "company": "AlleyCorp Nord (Toboggan Labs)",
+      "site": "alleycorpnord.com",
+      "role": "Full Stack Software Engineer",
+      "dates": "Aug 2021 – Sep 2023",
+      "bullets": [
+        "Built full-stack features across React, GraphQL, Node.js, and OpenAI-powered applications.",
+        "Designed the frontend architecture for a healthcare customer portal using React, TypeScript, and Material UI.",
+        "Partnered with product and design to translate complex customer needs into simple solutions.",
+        "Reduced technical debt and mentored junior engineers."
+      ]
+    },
+    {
+      "company": "Plotly",
+      "site": "plotly.com",
+      "role": "Front-End Engineer → Full Stack Developer → Lead",
+      "dates": "2016 – 2021",
+      "bullets": [
+        "Progressed into technical leadership while owning increasingly complex frontend and full-stack initiatives.",
+        "Architected enterprise authentication (SAML, LDAP, OIDC) and built GraphQL APIs with React.",
+        "Led architecture of Plotly's marketing platform and reusable UI infrastructure.",
+        "Led Flux→Redux migration; served as core maintainer of react-chart-editor."
+      ]
+    }
+  ],
+  "skills": [
+    { "group": "Languages", "items": "TypeScript, Python" },
+    { "group": "Frontend", "items": "React, Next.js, Redux, Material UI, RadixUI, Emotion" },
+    { "group": "Backend", "items": "Node.js, Express, Django, Apollo GraphQL, REST APIs" },
+    { "group": "AI", "items": "OpenAI, Claude" },
+    { "group": "Cloud & Tools", "items": "AWS (S3, Lambda, DynamoDB), Bash, CircleCI, Selenium" }
+  ],
+  "education": [
+    {
+      "degree": "M.S. Management & Technology",
+      "school": "Université Panthéon-Assas (Paris II)"
+    },
+    {
+      "degree": "B.Comm, Accounting",
+      "school": "Concordia University"
+    }
+  ]
+}

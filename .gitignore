@@ -17,3 +17,6 @@ out/
 npm-debug.log*
 .vercel
 .gstack/
+
+# local-only Claude Code settings
+.claude/settings.local.json

@@ -14,7 +14,7 @@ export function GET() {
     "",
     "## Writing",
     ...posts.map(
-      (p) => `- [${p.title}](${SITE_URL}/blog/${p.slug}): ${p.excerpt}`,
+      (p) => `- [${p.title}](${SITE_URL}/blog/${p.slug}): ${p.description}`,
     ),
     "",
   ].join("\n");

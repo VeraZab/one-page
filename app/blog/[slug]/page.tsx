@@ -17,14 +17,14 @@ export async function generateMetadata({
   const url = `/blog/${post.slug}`;
   return {
     title: post.title,
-    description: post.excerpt,
+    description: post.description,
     keywords: post.keywords,
     authors: [{ name: AUTHOR }],
     alternates: { canonical: url },
     openGraph: {
       type: "article",
       title: post.title,
-      description: post.excerpt,
+      description: post.description,
       url,
       publishedTime: new Date(post.date).toISOString(),
       authors: [AUTHOR],
@@ -33,7 +33,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: post.title,
-      description: post.excerpt,
+      description: post.description,
     },
   };
 }
@@ -47,7 +47,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
-    description: post.excerpt,
+    description: post.description,
     datePublished: new Date(post.date).toISOString(),
     dateModified: new Date(post.date).toISOString(),
     author: { "@type": "Person", name: AUTHOR, url: SITE_URL },

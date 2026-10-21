@@ -14,6 +14,9 @@ export interface PostMeta {
   title: string;
   date: string;
   excerpt: string;
+  // SEO meta description (LLM-optimized by the pre-commit hook); falls back to
+  // excerpt when absent. Kept separate so the authored excerpt stays untouched.
+  description: string;
   keywords: string[];
 }
 
@@ -34,6 +37,7 @@ export function getAllPosts(): PostMeta[] {
         title: data.title,
         date: data.date,
         excerpt: data.excerpt ?? "",
+        description: data.description ?? data.excerpt ?? "",
         keywords: data.keywords ?? [],
       };
     })
@@ -63,6 +67,7 @@ export async function getPost(slug: string): Promise<Post> {
     title: data.title,
     date: data.date,
     excerpt: data.excerpt ?? "",
+    description: data.description ?? data.excerpt ?? "",
     keywords: data.keywords ?? [],
     contentHtml: processed.toString(),
   };
