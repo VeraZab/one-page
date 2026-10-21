@@ -2,13 +2,16 @@
 title: "When to Use Claude Code Hooks (and When Not To)"
 date: "2026-10-20"
 excerpt: "Hooks are tempting: automate every rule the agent keeps breaking. But not everything belongs in a hook — here's the test I use before adding one."
+description: "When a rule belongs in a Claude Code hook versus AGENTS.md, CI, or nowhere — a practical test for guard hooks that fail open, stay fast, and are actually tested."
 keywords:
-  - Claude Code
-  - hooks
+  - Claude Code hooks
   - PreToolUse
+  - guard hook
   - AGENTS.md
-  - agent safety
   - CI
+  - fail open
+  - agent safety
+  - when to use hooks
 ---
 
 The first time you find hooks in Claude Code, it's tempting to reach for them constantly. The agent did the thing you told it not to? Write a hook. It pushed to the wrong branch? Hook. It keeps reformatting that file? Hook.

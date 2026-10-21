@@ -4,7 +4,8 @@
   "contact": [
     "New York Metropolitan Area",
     "Green Card Holder",
-    "vera.zabeida@gmail.com"
+    "vera.zabeida@gmail.com",
+    "verazabeida.com"
   ],
   "summary": "Senior Full Stack Engineer with 10 years of startup experience building customer-focused products from concept to production. Known for simplifying complex problems, identifying customer value, and delivering pragmatic full-stack and AI-powered solutions.",
   "experience": [
@@ -47,10 +48,19 @@
   ],
   "skills": [
     { "group": "Languages", "items": "TypeScript, Python" },
-    { "group": "Frontend", "items": "React, Next.js, Redux, Material UI, RadixUI, Emotion" },
-    { "group": "Backend", "items": "Node.js, Express, Django, Apollo GraphQL, REST APIs" },
+    {
+      "group": "Frontend",
+      "items": "React, Next.js, Redux, Material UI, RadixUI, Emotion"
+    },
+    {
+      "group": "Backend",
+      "items": "Node.js, Express, Django, Apollo GraphQL, REST APIs"
+    },
     { "group": "AI", "items": "OpenAI, Claude" },
-    { "group": "Cloud & Tools", "items": "AWS (S3, Lambda, DynamoDB), Bash, CircleCI, Selenium" }
+    {
+      "group": "Cloud & Tools",
+      "items": "AWS (S3, Lambda, DynamoDB), Bash, CircleCI, Selenium"
+    }
   ],
   "education": [
     {
