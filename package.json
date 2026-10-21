@@ -5,12 +5,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "cv": "node .claude/hooks/build-cv.mjs",
-    "seo": "node .claude/hooks/optimize-post-seo.mjs content/posts/*.mdx",
-    "prepare": "git config core.hooksPath .claude/hooks || true"
+    "cv": "node .claude/hooks/build-cv.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.137.0",
     "gray-matter": "^4.0.3",
     "next": "^15.0.0",
     "react": "^18.3.1",
