@@ -1,8 +1,8 @@
 ---
 title: "Skill or Subagent? Decide How Much You Want to Steer"
 date: "2026-10-23"
-excerpt: "Claude Code gives you skills and subagents, and honestly they look interchangeable. The real difference isn't what they can do — it's whether you want to keep steering the work or just judge the result."
-description: "Claude Code skills vs subagents: choose by one question — do you need to steer the work as it happens, or just judge the result?"
+excerpt: "Claude Code gives you skills and subagents, and honestly they look interchangeable. The real difference isn't what they can do — it's whether you need to steer the work as it happens, or judge it at checkpoints."
+description: "Claude Code skills vs subagents: choose by one question — do you need to steer the work as it happens, or judge it at checkpoints?"
 keywords:
   - Claude Code
   - skills
@@ -14,44 +14,43 @@ keywords:
   - when to use subagents
 ---
 
-A while back I handed my coding agent a ticket for a page that had gotten painfully slow. It was pulling a huge pile of data into the browser before it drew a single thing. The ticket even named the specialist to use — an agent I'd set up that already knew how those pages were supposed to be built.
+I've been experimenting with subagents lately, and somewhere in the middle of setting one up it hit me: I wasn't sure what actually separates a subagent from a skill. Claude Code hands you both, they're both just markdown files of instructions, and at a glance they look like the same tool wearing two hats.
 
-It ignored the specialist at first. It spent an hour reading docs and tracing the data path, cheerfully rebuilding knowledge the specialist already had. Once I nudged it to delegate, the work came back as commits I could just skim and approve: the data-loading fix, prefetching between views, a retry when a read failed. Lesson learned — use the specialist.
+Here's how I've come to think about them.
 
-Then I wanted a tiny visual change. One expanded row should look *just a little* different. And I realized… I had no idea how it would come out. The specialist works off in its own little world. I don't see what it's doing until it reports back, and it can't ask me anything — its questions have to route through the main agent and come back the same way. For a big refactor, that distance is the whole point. For "a touch more contrast… no, less," it's like redecorating a room by mailing letters back and forth.
+The thing that separates them isn't capability. It's whether you need to steer the work as it happens, or judge it at checkpoints. A skill runs inside the conversation you're already in — you watch each step land and can nudge it mid-stream. A subagent goes off on its own and comes back with a result you review.
 
-That, right there, is the real question with skills and subagents.
+I felt the difference the hard way. I'd sent a slow page off to a specialist subagent for a refactor, and the work came back as clean commits I could just skim and approve. Perfect. Then I wanted one row to look *just a little* different — and suddenly the same distance that made the refactor clean was the problem. The subagent was off on its own, every question routing back through the main agent and back out again. For the refactor, that distance was exactly what I wanted. For nudging one row's contrast, it meant waiting on a round-trip every single time I wanted to see what changed.
 
-Claude Code hands you both, and at a glance they look like the same thing — each is just a markdown file of instructions. But the thing that actually separates them isn't what they *can* do. It's whether you keep your hands on the work while it's happening.
+## The real difference is judgment
 
-## Two ways to deliver the same knowledge
-
-A **skill** drops its instructions into the conversation you're already in. The agent reading it is the one you've been talking to — it has your decisions, your context, and it can stop and ask you something mid-stream. You watch each step land.
-
-A **subagent** starts fresh. It gets a brief, goes off on its own, and comes back with a result. Your main thread stays clean — and so does its judgment, because it never saw your assumptions, so it won't quietly inherit them. The trade: you've let go of the work until it's done.
+There's a subtler thing underneath the steering question. A skill runs on *your* context — it has your decisions and your assumptions, which means it also quietly inherits your blind spots. A subagent never saw any of that. It gets a brief and figures out how to get there — loading whatever skills it needs, deciding what to tackle first, pushing back when something seems off. That independence is the whole point: it can reach a conclusion you wouldn't have, because nothing you assumed is nudging it.
 
 So don't open with "which one's better?" Open with:
 
-> Do I need to steer this while it runs, or just judge the result?
+> Do I need to steer this while it runs, or judge it at checkpoints?
 
 ## When you need to steer: reach for a skill
 
 - **The work is visual or iterative.** Rendering tweaks, layout, wording — these are tight little feedback loops, and every trip out to a subagent adds a relay you have to wait on.
 - **There's a human step in the middle.** A login flow that ends with "ask me to confirm the code" needs an actual someone to ask. Any question it has routes back through the main agent first, and that's a long way around for a yes or no.
 - **Each step leans on something you just decided here.** A "write the PR" skill that builds the summary from what this conversation actually knows — what changed, why, which boxes are genuinely ticked — only works with all of that still in the room.
+- **It's a short recipe, not a job.** If the whole thing is "run these steps in order," that's a skill. If it needs to figure out how to approach the problem first, that's a subagent.
 
 ## When you only want the result: send a subagent
 
 - **It's big and file-heavy, and you want the outcome, not the noise.** A dozen files and ten test runs would bury the higher-level conversation you're trying to have.
-- **You want judgment on its own terms.** A specialist deciding something like which data source a page should pull from works *better* without your hunches nudging it.
+- **The domain has rules worth enforcing.** A specialist that owns how a thing is built will push back when a request cuts against the grain — which is exactly what you want from someone who knows the area better than you do in the moment.
 - **You want a genuine second opinion.** A read-only reviewer that never saw your reasoning can't share your blind spots — that's the feature.
 - **It can run in parallel.** One half of a feature can get built in its own session from a tight little contract while you build the other half.
+
+And one rule that beats all of these: if a ticket or a teammate names a specialist, start with the specialist.
 
 ## The pattern I landed on: same rules, delivered both ways
 
 Here's the bit that made it all click for me: the knowledge doesn't have to pick a side.
 
-I keep the actual rules — which component to use, where a given change belongs, what never to do — in one standalone skill. The specialist subagent loads that exact same skill before it starts. One source of truth, two ways to deliver it.
+I keep the actual rules — which component to use, where a given change belongs, what never to do — in one standalone skill. The specialist subagent loads that exact same skill before it starts, then adds what only an agent can carry: a working method, its own tool limits, a review mode. One source of truth, two ways to deliver it.
 
 So a task now tends to go:
 
@@ -59,9 +58,17 @@ So a task now tends to go:
 2. **Tweaks I want to watch happen inline, with the skill loaded.** Same guardrails, except I keep steering.
 3. **The subagent does a read-only review at the end.** Fresh eyes catch whatever the quick inline tweaks quietly broke.
 
-## What delegating actually costs
+## Decide before you start reading
 
-Handing work to a subagent isn't free, and it helps to see the bill up front:
+One timing rule matters more than the rest: decide whether to delegate *before* you start reading the code. Once you've done the research inline, the context you've built up will always argue for staying inline — you've already got the files open, the path traced, the shape in your head. That's how an hour disappears into work a specialist was set up to own.
+
+## What each one costs
+
+Neither is free, and it helps to see the bill up front.
+
+A **skill** spends your context window — every rule it drops in is tokens the main conversation now carries — and it inherits your blind spots, because it runs on the same assumptions you walked in with.
+
+A **subagent** costs differently:
 
 - **Briefing is real work.** The specialist can't open your ticket tracker or read your mind. You paste in the gap list, the paths, the constraints — and a good brief takes a few real minutes.
 - **You become the switchboard.** Every question it has comes back through you, and your answer goes back out the same way. For a long back-and-forth, that gets old fast.
