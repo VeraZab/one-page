@@ -18,11 +18,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: `${SITE_NAME} — Full-Stack Engineer`,
     description: SITE_DESCRIPTION,
+    images: [{ url: `${SITE_URL}/me.jpeg`, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Full-Stack Engineer`,
     description: SITE_DESCRIPTION,
+    images: [`${SITE_URL}/me.jpeg`],
   },
   robots: {
     index: true,

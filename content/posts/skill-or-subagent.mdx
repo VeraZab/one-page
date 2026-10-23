@@ -1,0 +1,79 @@
+---
+title: "Skill or Subagent? Decide How Much You Want to Steer"
+date: "2026-10-23"
+excerpt: "Claude Code gives you skills and subagents, and honestly they look interchangeable. The real difference isn't what they can do — it's whether you want to keep steering the work or just judge the result."
+description: "Claude Code skills vs subagents: choose by one question — do you need to steer the work as it happens, or just judge the result?"
+keywords:
+  - Claude Code
+  - skills
+  - subagents
+  - AI coding agents
+  - delegation
+  - agent workflow
+  - steering vs delegation
+  - when to use subagents
+---
+
+A while back I handed my coding agent a ticket for a page that had gotten painfully slow. It was pulling a huge pile of data into the browser before it drew a single thing. The ticket even named the specialist to use — an agent I'd set up that already knew how those pages were supposed to be built.
+
+It ignored the specialist at first. It spent an hour reading docs and tracing the data path, cheerfully rebuilding knowledge the specialist already had. Once I nudged it to delegate, the work came back as commits I could just skim and approve: the data-loading fix, prefetching between views, a retry when a read failed. Lesson learned — use the specialist.
+
+Then I wanted a tiny visual change. One expanded row should look *just a little* different. And I realized… I had no idea how it would come out. The specialist works off in its own little world. I don't see what it's doing until it reports back, and it can't ask me anything — its questions have to route through the main agent and come back the same way. For a big refactor, that distance is the whole point. For "a touch more contrast… no, less," it's like redecorating a room by mailing letters back and forth.
+
+That, right there, is the real question with skills and subagents.
+
+Claude Code hands you both, and at a glance they look like the same thing — each is just a markdown file of instructions. But the thing that actually separates them isn't what they *can* do. It's whether you keep your hands on the work while it's happening.
+
+## Two ways to deliver the same knowledge
+
+A **skill** drops its instructions into the conversation you're already in. The agent reading it is the one you've been talking to — it has your decisions, your context, and it can stop and ask you something mid-stream. You watch each step land.
+
+A **subagent** starts fresh. It gets a brief, goes off on its own, and comes back with a result. Your main thread stays clean — and so does its judgment, because it never saw your assumptions, so it won't quietly inherit them. The trade: you've let go of the work until it's done.
+
+So don't open with "which one's better?" Open with:
+
+> Do I need to steer this while it runs, or just judge the result?
+
+## When you need to steer: reach for a skill
+
+- **The work is visual or iterative.** Rendering tweaks, layout, wording — these are tight little feedback loops, and every trip out to a subagent adds a relay you have to wait on.
+- **There's a human step in the middle.** A login flow that ends with "ask me to confirm the code" needs an actual someone to ask. Any question it has routes back through the main agent first, and that's a long way around for a yes or no.
+- **Each step leans on something you just decided here.** A "write the PR" skill that builds the summary from what this conversation actually knows — what changed, why, which boxes are genuinely ticked — only works with all of that still in the room.
+
+## When you only want the result: send a subagent
+
+- **It's big and file-heavy, and you want the outcome, not the noise.** A dozen files and ten test runs would bury the higher-level conversation you're trying to have.
+- **You want judgment on its own terms.** A specialist deciding something like which data source a page should pull from works *better* without your hunches nudging it.
+- **You want a genuine second opinion.** A read-only reviewer that never saw your reasoning can't share your blind spots — that's the feature.
+- **It can run in parallel.** One half of a feature can get built in its own session from a tight little contract while you build the other half.
+
+## The pattern I landed on: same rules, delivered both ways
+
+Here's the bit that made it all click for me: the knowledge doesn't have to pick a side.
+
+I keep the actual rules — which component to use, where a given change belongs, what never to do — in one standalone skill. The specialist subagent loads that exact same skill before it starts. One source of truth, two ways to deliver it.
+
+So a task now tends to go:
+
+1. **Big reshapes go to the subagent.** New data source, new layout, a page loading way too much. I review the commits, not the process.
+2. **Tweaks I want to watch happen inline, with the skill loaded.** Same guardrails, except I keep steering.
+3. **The subagent does a read-only review at the end.** Fresh eyes catch whatever the quick inline tweaks quietly broke.
+
+## What delegating actually costs
+
+Handing work to a subagent isn't free, and it helps to see the bill up front:
+
+- **Briefing is real work.** The specialist can't open your ticket tracker or read your mind. You paste in the gap list, the paths, the constraints — and a good brief takes a few real minutes.
+- **You become the switchboard.** Every question it has comes back through you, and your answer goes back out the same way. For a long back-and-forth, that gets old fast.
+- **You see the results, not the reasoning.** Commits, a hot reload, a final diff — sure. The thinking that got there — no.
+- **A vague brief gets a confident answer to the wrong question.** With nothing to anchor it, a subagent will happily, thoroughly solve the thing *next to* what you meant.
+
+## A rule of thumb
+
+When you're not sure, sort it by that one question:
+
+- **Steering, a human step, or decisions from this conversation → skill.**
+- **Big, specialized, needs fresh eyes, or can run in parallel → subagent.**
+- **Best of both: write the knowledge once as a skill, have the subagent load it, and use whichever shape fits the moment.**
+
+The capability is the same either way. What you're really choosing is how close you want to stay to the work.

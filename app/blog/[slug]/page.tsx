@@ -31,7 +31,7 @@ export async function generateMetadata({
       tags: post.keywords,
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: post.title,
       description: post.description,
     },
@@ -50,7 +50,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     description: post.description,
     datePublished: new Date(post.date).toISOString(),
     dateModified: new Date(post.date).toISOString(),
-    author: { "@type": "Person", name: AUTHOR, url: SITE_URL },
+    author: { "@type": "Person", name: AUTHOR, url: SITE_URL, image: `${SITE_URL}/me.jpeg` },
     publisher: { "@type": "Person", name: AUTHOR },
     mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
     keywords: post.keywords.join(", "),
