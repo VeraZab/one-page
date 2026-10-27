@@ -5,7 +5,8 @@
     "New York Metropolitan Area",
     "Green Card Holder",
     "vera.zabeida@gmail.com",
-    "verazabeida.com"
+    { "label": "linkedin.com/in/verazabeida", "href": "https://www.linkedin.com/in/verazabeida/" },
+    { "label": "verazabeida.com", "href": "https://verazabeida.com" }
   ],
   "summary": "Senior Full Stack Engineer with 10 years of startup experience building customer-focused products from concept to production. Known for simplifying complex problems, identifying customer value, and delivering pragmatic full-stack and AI-powered solutions.",
   "experience": [
@@ -65,11 +66,13 @@
   "education": [
     {
       "degree": "M.S. Management & Technology",
-      "school": "Université Panthéon-Assas (Paris II)"
+      "school": "Université Panthéon-Assas (Paris II)",
+      "location": "Paris, France"
     },
     {
       "degree": "B.Comm, Accounting",
-      "school": "Concordia University"
+      "school": "Concordia University",
+      "location": "Montreal, Canada"
     }
   ]
 }

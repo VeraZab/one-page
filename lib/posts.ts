@@ -18,13 +18,18 @@ export interface PostMeta {
   // excerpt when absent. Kept separate so the authored excerpt stays untouched.
   description: string;
   keywords: string[];
+  // `draft: true` in frontmatter hides a post everywhere in production. Drafts
+  // are only surfaced locally, via the dev-only toggle on the blog index.
+  draft: boolean;
 }
 
 export interface Post extends PostMeta {
   contentHtml: string;
 }
 
-export function getAllPosts(): PostMeta[] {
+// Every post on disk, newest-first, including drafts. Internal — callers pick
+// published vs. draft so drafts can never leak into production listings.
+function readAllMetas(): PostMeta[] {
   const files = fs.readdirSync(postsDir);
   return files
     .filter((f) => f.endsWith(".mdx"))
@@ -39,9 +44,22 @@ export function getAllPosts(): PostMeta[] {
         excerpt: data.excerpt ?? "",
         description: data.description ?? data.excerpt ?? "",
         keywords: data.keywords ?? [],
+        draft: data.draft === true,
       };
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+// Published posts only — the default everywhere (blog index, llms.txt,
+// sitemap, next-post nav). Drafts are excluded.
+export function getAllPosts(): PostMeta[] {
+  return readAllMetas().filter((p) => !p.draft);
+}
+
+// Draft posts only, newest-first. Used by the dev-only drafts view; guard call
+// sites with NODE_ENV so this never runs in production.
+export function getDraftPosts(): PostMeta[] {
+  return readAllMetas().filter((p) => p.draft);
 }
 
 // The post published right after `slug` (chronologically newer). Posts are
@@ -69,6 +87,7 @@ export async function getPost(slug: string): Promise<Post> {
     excerpt: data.excerpt ?? "",
     description: data.description ?? data.excerpt ?? "",
     keywords: data.keywords ?? [],
+    draft: data.draft === true,
     contentHtml: processed.toString(),
   };
 }

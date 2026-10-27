@@ -1,0 +1,54 @@
+---
+title: "Who's Winning at Code, Today"
+date: "2026-10-26"
+excerpt: "A daily snapshot of where the main AI providers rank on the code benchmarks that actually matter — pulled from public leaderboards."
+description: "Daily ranking of the main AI models on code benchmarks (SWE-bench, Aider polyglot, LiveCodeBench, Terminal-Bench), tabulated from public leaderboards."
+keywords:
+  - AI code benchmarks
+  - SWE-bench
+  - Aider polyglot
+  - LiveCodeBench
+  - model rankings
+  - Claude vs GPT vs Gemini
+  - coding model leaderboard
+draft: true
+---
+
+The best coding model changes month to month, and the leaderboards that track
+it live in a dozen different tabs. This page pulls them into one small table:
+each day, where the main providers rank across the code benchmarks that
+actually say something about day-to-day engineering work.
+
+> **Mockup — sample data.** The numbers below are placeholders to show the
+> layout. The live version will pull current standings from public
+> leaderboards (SWE-bench Verified, Aider Polyglot, LiveCodeBench,
+> Terminal-Bench) and refresh daily.
+
+## Today's standings
+
+_Rank per benchmark (1 = best). Sample values._
+
+| Model | SWE-bench Verified | Aider Polyglot | LiveCodeBench | Terminal-Bench |
+| --- | :---: | :---: | :---: | :---: |
+| Claude Opus 4.8 | 1 | 1 | 2 | 1 |
+| GPT (latest) | 2 | 3 | 1 | 3 |
+| Gemini (latest) | 3 | 2 | 3 | 2 |
+| Claude Sonnet 4.6 | 4 | 4 | 4 | 4 |
+
+## What each column measures
+
+- **SWE-bench Verified** — resolving real GitHub issues end to end. The closest
+  thing to "can it do the actual job."
+- **Aider Polyglot** — editing existing code correctly across many languages.
+  Rewards precise diffs, punishes confident nonsense.
+- **LiveCodeBench** — fresh competitive-programming problems, so there's no
+  training-set leakage. Raw problem-solving.
+- **Terminal-Bench** — getting things done in a real shell: running commands,
+  reading output, recovering from errors.
+
+## How this gets built
+
+The plan: a small daily job reads the current standings from each public
+leaderboard, normalizes them to a rank per benchmark, and writes a dated data
+file this page renders. History gets kept, so the table can eventually show
+movement — who climbed, who slipped — not just a single day.

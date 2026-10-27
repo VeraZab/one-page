@@ -298,6 +298,25 @@ svg:hover {
   margin-bottom: 0.4rem;
 }
 
+/* Draft titles (dev-only listing) stand apart from navy published titles. */
+.draft-title {
+  color: var(--magenta);
+}
+
+.draft-tag {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  color: var(--white);
+  background: var(--magenta);
+  border-radius: 3px;
+}
+
 .post-date {
   font-size: 0.85rem;
   color: var(--navy);
@@ -310,6 +329,45 @@ svg:hover {
   font-size: 1rem;
   line-height: 1.6;
   margin: 0;
+}
+
+/* Dev-only drafts view (compiled out of production builds) */
+.drafts-banner {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--magenta);
+  border: 1px dashed var(--magenta);
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.blog-topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+/* Inside the row, the shared bottom margin lives on the row itself. */
+.blog-topbar .back-link {
+  margin-bottom: 0;
+}
+
+.drafts-toggle {
+  color: var(--navy);
+  font-weight: bold;
+  opacity: 0.7;
+  text-decoration: underline wavy;
+  text-underline-offset: 4px;
+}
+
+.drafts-toggle:hover {
+  color: var(--magenta);
+  opacity: 1;
 }
 
 /* Post */

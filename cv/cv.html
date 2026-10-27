@@ -14,6 +14,8 @@
   .headline { font-style: italic; color: var(--muted); font-size: 12px; margin-top: 2px; }
   .contact { font-size: 9.5px; color: var(--text); margin-top: 7px; }
   .contact .sep { color: #9aa7b5; margin: 0 6px; }
+  .contact-link { color: var(--text); text-decoration: none; }
+  .contact-link:hover { text-decoration: underline; }
   .rule { border-bottom: 1.5px solid var(--rule); margin: 8px 0 12px; }
   .summary { font-size: 10.5px; margin-bottom: 14px; }
   .cols { display: grid; grid-template-columns: 1.9fr 1fr; gap: 26px; }
@@ -22,7 +24,8 @@
   .right h2:not(:first-child) { margin-top: 18px; }
   .entry { margin-bottom: 13px; }
   .entry-head { color: var(--ink); }
-  .company { font-weight: 700; }
+  .company { font-weight: 700; color: var(--ink); text-decoration: none; }
+  a.company:hover { text-decoration: underline; }
   .entry-head .sep { color: #9aa7b5; }
   .site { color: var(--muted); font-style: italic; font-size: 9.5px; }
   .entry-sub { display: flex; justify-content: space-between; align-items: baseline; margin: 1px 0 5px; }
@@ -35,11 +38,12 @@
   .edu { margin-bottom: 9px; }
   .degree { font-weight: 700; color: var(--ink); }
   .school { font-style: italic; color: var(--muted); }
+  .edu-loc { color: var(--muted); font-size: 9.5px; }
 </style></head>
 <body>
   <div class="name">Vera Zabeida</div>
   <div class="headline">Senior Full Stack Engineer</div>
-  <div class="contact">New York Metropolitan Area <span class="sep">•</span> Green Card Holder <span class="sep">•</span> vera.zabeida@gmail.com <span class="sep">•</span> verazabeida.com</div>
+  <div class="contact">New York Metropolitan Area <span class="sep">•</span> Green Card Holder <span class="sep">•</span> vera.zabeida@gmail.com <span class="sep">•</span> <a class="contact-link" href="https://www.linkedin.com/in/verazabeida/">linkedin.com/in/verazabeida</a> <span class="sep">•</span> <a class="contact-link" href="https://verazabeida.com">verazabeida.com</a></div>
   <div class="rule"></div>
   <p class="summary">Senior Full Stack Engineer with 10 years of startup experience building customer-focused products from concept to production. Known for simplifying complex problems, identifying customer value, and delivering pragmatic full-stack and AI-powered solutions.</p>
   <div class="cols">
@@ -48,7 +52,7 @@
       
     <div class="entry">
       <div class="entry-head">
-        <span class="company">Atomic Supply</span> <span class="sep">•</span> <span class="site">atomic.supply</span>
+        <a class="company" href="https://atomic.supply">Atomic Supply</a> <span class="sep">•</span> <span class="site">atomic.supply</span>
       </div>
       <div class="entry-sub">
         <span class="role">Full Stack Software Engineer</span>
@@ -58,7 +62,7 @@
     </div>
     <div class="entry">
       <div class="entry-head">
-        <span class="company">AlleyCorp Nord (Toboggan Labs)</span> <span class="sep">•</span> <span class="site">alleycorpnord.com</span>
+        <a class="company" href="https://alleycorpnord.com">AlleyCorp Nord (Toboggan Labs)</a> <span class="sep">•</span> <span class="site">alleycorpnord.com</span>
       </div>
       <div class="entry-sub">
         <span class="role">Full Stack Software Engineer</span>
@@ -68,7 +72,7 @@
     </div>
     <div class="entry">
       <div class="entry-head">
-        <span class="company">Plotly</span> <span class="sep">•</span> <span class="site">plotly.com</span>
+        <a class="company" href="https://plotly.com">Plotly</a> <span class="sep">•</span> <span class="site">plotly.com</span>
       </div>
       <div class="entry-sub">
         <span class="role">Front-End Engineer → Full Stack Developer → Lead</span>
@@ -81,7 +85,7 @@
       <h2>Skills</h2>
       <div class="skill"><div class="skill-group">Languages</div><div class="skill-items">TypeScript, Python</div></div><div class="skill"><div class="skill-group">Frontend</div><div class="skill-items">React, Next.js, Redux, Material UI, RadixUI, Emotion</div></div><div class="skill"><div class="skill-group">Backend</div><div class="skill-items">Node.js, Express, Django, Apollo GraphQL, REST APIs</div></div><div class="skill"><div class="skill-group">AI</div><div class="skill-items">OpenAI, Claude</div></div><div class="skill"><div class="skill-group">Cloud &amp; Tools</div><div class="skill-items">AWS (S3, Lambda, DynamoDB), Bash, CircleCI, Selenium</div></div>
       <h2>Education</h2>
-      <div class="edu"><div class="degree">M.S. Management &amp; Technology</div><div class="school">Université Panthéon-Assas (Paris II)</div></div><div class="edu"><div class="degree">B.Comm, Accounting</div><div class="school">Concordia University</div></div>
+      <div class="edu"><div class="degree">M.S. Management &amp; Technology</div><div class="school">Université Panthéon-Assas (Paris II)</div><div class="edu-loc">Paris, France</div></div><div class="edu"><div class="degree">B.Comm, Accounting</div><div class="school">Concordia University</div><div class="edu-loc">Montreal, Canada</div></div>
     </div>
   </div>
 </body></html>

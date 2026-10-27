@@ -5,11 +5,12 @@
 //
 //   • Edited a blog post  -> if its SEO is stale/missing, ask Claude (via stderr
 //     + exit 2) to refresh the frontmatter `description` + `keywords`.
+//   • Published a draft    -> stamp `date` to today (the real publish date).
 //   • Edited cv/content.json -> regenerate the CV PDF.
 //
 // Fails open: any error exits 0 so it never disrupts the session.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { relative, join } from "node:path";
@@ -37,7 +38,28 @@ try {
 
   // --- Blog post changed: nudge Claude to refresh its SEO ---
   if (/^content\/posts\/.+\.mdx$/.test(rel)) {
-    const { data, content } = matter(readFileSync(abs, "utf8"));
+    const raw = readFileSync(abs, "utf8");
+    const { data, content } = matter(raw);
+
+    // --- Publish-date stamping ---
+    // While `draft: true`, remember the post is a draft. When that flag later
+    // disappears (draft → published), rewrite `date` to today so the post shows
+    // its real publish date, not the day the draft was first created. A targeted
+    // line replace keeps the rest of the frontmatter formatting untouched.
+    const draftDir = join(ROOT, ".claude", ".draft-cache");
+    const draftMarker = join(draftDir, rel.replace(/[/\\]/g, "__") + ".draft");
+    const wasDraft = existsSync(draftMarker);
+
+    if (data.draft === true) {
+      mkdirSync(draftDir, { recursive: true });
+      writeFileSync(draftMarker, "1");
+    } else if (wasDraft) {
+      const today = new Date().toISOString().slice(0, 10);
+      const stamped = raw.replace(/^date:\s*.*$/m, `date: "${today}"`);
+      if (stamped !== raw) writeFileSync(abs, stamped);
+      rmSync(draftMarker, { force: true });
+    }
+
     const hash = createHash("sha256").update(content).digest("hex");
 
     const cacheDir = join(ROOT, ".claude", ".seo-cache");

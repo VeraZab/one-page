@@ -17,13 +17,20 @@ const PDF = join(ROOT, "public", "VERA_ZABEIDA_Senior_Full_Stack_Engineer.pdf");
 const cv = JSON.parse(readFileSync(SRC, "utf8"));
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// Bare domains in content.json → absolute https URLs for the PDF's links.
+const href = (site) => (/^https?:\/\//.test(site) ? site : `https://${site}`);
 
 const experience = cv.experience
   .map(
-    (job) => `
+    (job) => {
+      // Company name links to the company site when one is given.
+      const company = job.site
+        ? `<a class="company" href="${esc(href(job.site))}">${esc(job.company)}</a>`
+        : `<span class="company">${esc(job.company)}</span>`;
+      return `
     <div class="entry">
       <div class="entry-head">
-        <span class="company">${esc(job.company)}</span>${
+        ${company}${
           job.site ? ` <span class="sep">•</span> <span class="site">${esc(job.site)}</span>` : ""
         }
       </div>
@@ -32,7 +39,8 @@ const experience = cv.experience
         <span class="dates">${esc(job.dates)}</span>
       </div>
       <ul>${job.bullets.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>
-    </div>`,
+    </div>`;
+    },
   )
   .join("");
 
@@ -42,9 +50,18 @@ const skills = cv.skills
   )
   .join("");
 
+// Contact items are plain strings, or { label, href } for clickable links.
+const contact = cv.contact
+  .map((c) =>
+    typeof c === "string"
+      ? esc(c)
+      : `<a class="contact-link" href="${esc(href(c.href))}">${esc(c.label)}</a>`,
+  )
+  .join(' <span class="sep">•</span> ');
+
 const education = cv.education
   .map(
-    (e) => `<div class="edu"><div class="degree">${esc(e.degree)}</div><div class="school">${esc(e.school)}</div></div>`,
+    (e) => `<div class="edu"><div class="degree">${esc(e.degree)}</div><div class="school">${esc(e.school)}</div>${e.location ? `<div class="edu-loc">${esc(e.location)}</div>` : ""}</div>`,
   )
   .join("");
 
@@ -64,6 +81,8 @@ const html = `<!doctype html>
   .headline { font-style: italic; color: var(--muted); font-size: 12px; margin-top: 2px; }
   .contact { font-size: 9.5px; color: var(--text); margin-top: 7px; }
   .contact .sep { color: #9aa7b5; margin: 0 6px; }
+  .contact-link { color: var(--text); text-decoration: none; }
+  .contact-link:hover { text-decoration: underline; }
   .rule { border-bottom: 1.5px solid var(--rule); margin: 8px 0 12px; }
   .summary { font-size: 10.5px; margin-bottom: 14px; }
   .cols { display: grid; grid-template-columns: 1.9fr 1fr; gap: 26px; }
@@ -72,7 +91,8 @@ const html = `<!doctype html>
   .right h2:not(:first-child) { margin-top: 18px; }
   .entry { margin-bottom: 13px; }
   .entry-head { color: var(--ink); }
-  .company { font-weight: 700; }
+  .company { font-weight: 700; color: var(--ink); text-decoration: none; }
+  a.company:hover { text-decoration: underline; }
   .entry-head .sep { color: #9aa7b5; }
   .site { color: var(--muted); font-style: italic; font-size: 9.5px; }
   .entry-sub { display: flex; justify-content: space-between; align-items: baseline; margin: 1px 0 5px; }
@@ -85,11 +105,12 @@ const html = `<!doctype html>
   .edu { margin-bottom: 9px; }
   .degree { font-weight: 700; color: var(--ink); }
   .school { font-style: italic; color: var(--muted); }
+  .edu-loc { color: var(--muted); font-size: 9.5px; }
 </style></head>
 <body>
   <div class="name">${esc(cv.name)}</div>
   <div class="headline">${esc(cv.title)}</div>
-  <div class="contact">${cv.contact.map(esc).join(' <span class="sep">•</span> ')}</div>
+  <div class="contact">${contact}</div>
   <div class="rule"></div>
   <p class="summary">${esc(cv.summary)}</p>
   <div class="cols">

@@ -4,6 +4,7 @@ node_modules/
 # next.js
 .next/
 out/
+*.tsbuildinfo
 
 # misc
 .DS_Store
@@ -21,3 +22,4 @@ npm-debug.log*
 # local-only Claude Code settings
 .claude/settings.local.json
 .claude/.seo-cache/
+.claude/.draft-cache/

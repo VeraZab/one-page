@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getAllPosts, getNextPost, getPost } from "@/lib/posts";
 import { SITE_URL, AUTHOR } from "@/lib/site";
 import Link from "next/link";
+
+// Drafts are viewable locally but 404 in production, even by direct URL — since
+// `dynamicParams` defaults to true, an un-prebuilt draft slug would otherwise
+// render on demand. This guard is the backstop that keeps drafts off the live site.
+const IS_DEV = process.env.NODE_ENV === "development";
 
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -14,6 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
+  if (post.draft && !IS_DEV) return {};
   const url = `/blog/${post.slug}`;
   return {
     title: post.title,
@@ -41,6 +48,7 @@ export async function generateMetadata({
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPost(slug);
+  if (post.draft && !IS_DEV) notFound();
   const nextPost = getNextPost(slug);
 
   const jsonLd = {
@@ -64,7 +72,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       />
       <div className="blog-wrapper">
         <article className="post-container">
-          <Link href="/blog" className="back-link">← writing</Link>
+          <div className="blog-topbar">
+            <Link href="/blog" className="back-link">
+              {IS_DEV && post.draft ? "← published posts" : "← writing"}
+            </Link>
+            {IS_DEV && post.draft && (
+              <Link href="/blog?drafts" className="drafts-toggle">← drafts</Link>
+            )}
+          </div>
           <h1 className="post-title">{post.title}</h1>
           <time className="post-date" dateTime={post.date}>{post.date}</time>
           <div
